@@ -82,7 +82,7 @@ titilarSeñalDePrecaucion
 	(Delay for: intervaloSeñalEnSegundos*second) wait.! !
 
 
-!ControladorDeTransito class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!ControladorDeTransito class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -92,8 +92,79 @@ initializeCollaboratorsFromFile
 	intervaloSeñalEnSegundos := 2.! !
 
 
+!classDefinition: #Semaforo category: #'ControladorDeTransito-ClassBased'!
+DenotativeObjectMorph subclass: #Semaforo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ControladorDeTransito-ClassBased'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Semaforo class' category: #'ControladorDeTransito-ClassBased'!
+Semaforo class
+	instanceVariableNames: 'señalDeDetencion señalDePrecaucion señalDeAvance tiempoDeCadaSeñal'!
+
+!Semaforo class methodsFor: 'morph' stamp: 'GSC 4/1/2019 20:47:25'!
+createMorph
+
+	^LayoutMorph newColumn
+		morphExtent: 60 @ 130;
+		yourself
+! !
+
+
+!Semaforo class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:47:25'!
+apagar
+	señalDeDetencion apagar.
+	señalDePrecaucion apagar.
+	señalDeAvance apagar.! !
+
+!Semaforo class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:47:25'!
+avisarAvance
+	señalDePrecaucion apagar.
+	señalDeAvance prender.
+	! !
+
+!Semaforo class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:47:25'!
+avisarDetencion
+	señalDePrecaucion apagar.
+	señalDeDetencion prender.
+	! !
+
+!Semaforo class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:47:25'!
+avisarPrecaucion
+	señalDeAvance apagar.
+	señalDeDetencion apagar.
+	señalDePrecaucion prender.
+	! !
+
+!Semaforo class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:47:25'!
+permitirAvanzar
+	self 
+		apagar;
+		avisarAvance.! !
+
+!Semaforo class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:54:21'!
+prender
+	self 
+		openInWorld;
+		apagar.! !
+
+
+!Semaforo class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	morph := nil.
+	señalDeDetencion := SeñalDeDetencionDeCorrientes.
+	señalDePrecaucion := SeñalDePrecaucionDeCorrientes.
+	señalDeAvance := SeñalDeAvanceDeCorrientes.
+	tiempoDeCadaSeñal := 1.! !
+
+
 !classDefinition: #SemaforoDeCorrientes category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SemaforoDeCorrientes
+Semaforo subclass: #SemaforoDeCorrientes
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -114,57 +185,7 @@ createMorph
 ! !
 
 
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 01:13:16'!
-apagar
-	señalDeDetencion apagar.
-	señalDePrecaucion apagar.
-	señalDeAvance apagar.! !
-
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:17:53'!
-avisarAvance
-	señalDePrecaucion apagar.
-	señalDeAvance prender.
-	! !
-
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:18:02'!
-avisarDetencion
-	señalDePrecaucion apagar.
-	señalDeDetencion prender.
-	! !
-
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:18:19'!
-avisarPrecaucion
-	señalDeAvance apagar.
-	señalDeDetencion apagar.
-	señalDePrecaucion prender.
-	! !
-
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 01:14:30'!
-avisarPrecaucionPorEncendido
-	5 timesRepeat: [ self titilarSeñalDePrecaucion. ]! !
-
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 01:22:42'!
-permitirAvanzar
-	self 
-		apagar;
-		avisarAvance.! !
-
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:54:51'!
-prender
-	self 
-		openInWorld;
-		apagar;
-		avisarPrecaucionPorEncendido.! !
-
-!SemaforoDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 01:56:34'!
-titilarSeñalDePrecaucion
-	señalDePrecaucion prender.
-	(Delay for: tiempoDeCadaSeñal*second) wait.
-	señalDePrecaucion apagar.
-	(Delay for: tiempoDeCadaSeñal*second) wait.! !
-
-
-!SemaforoDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SemaforoDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -172,11 +193,15 @@ initializeCollaboratorsFromFile
 	señalDeDetencion := SeñalDeDetencionDeCorrientes.
 	señalDePrecaucion := SeñalDePrecaucionDeCorrientes.
 	señalDeAvance := SeñalDeAvanceDeCorrientes.
+	tiempoDeCadaSeñal := 1.
+	señalDeDetencion := SeñalDeDetencionDeCorrientes.
+	señalDePrecaucion := SeñalDePrecaucionDeCorrientes.
+	señalDeAvance := SeñalDeAvanceDeCorrientes.
 	tiempoDeCadaSeñal := 1.! !
 
 
 !classDefinition: #SemaforoDeScalabriniOrtiz category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SemaforoDeScalabriniOrtiz
+Semaforo subclass: #SemaforoDeScalabriniOrtiz
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -197,53 +222,7 @@ createMorph
 ! !
 
 
-!SemaforoDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/26/2019 01:14:04'!
-apagar
-	señalDeDetencion apagar.
-	señalDePrecaucion apagar.
-	señalDeAvance apagar.! !
-
-!SemaforoDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:17:30'!
-avisarAvance
-	señalDePrecaucion apagar.
-	señalDeAvance prender.
-	! !
-
-!SemaforoDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:17:17'!
-avisarDetencion
-	señalDePrecaucion apagar.
-	señalDeDetencion prender.
-	! !
-
-!SemaforoDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:16:40'!
-avisarPrecaucion
-	señalDeAvance apagar.
-	señalDeDetencion apagar.
-	señalDePrecaucion prender.
-	! !
-
-!SemaforoDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:52:03'!
-avisarPrecaucionPorEncendido
-	5 timesRepeat: [ 
-		self titilarSeñalDePrecaucion.
-		]! !
-
-!SemaforoDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:52:03'!
-prender
-	self 
-		openInWorld;
-		apagar;
-		avisarPrecaucionPorEncendido.! !
-
-!SemaforoDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/26/2019 01:57:00'!
-titilarSeñalDePrecaucion
-	señalDePrecaucion prender.
-	(Delay for: tiempoDeCadaSeñal*second) wait.
-	señalDePrecaucion apagar.
-	(Delay for: tiempoDeCadaSeñal*second) wait.! !
-
-
-!SemaforoDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SemaforoDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -251,11 +230,52 @@ initializeCollaboratorsFromFile
 	señalDeDetencion := SeñalDeDetencionDeScalabriniOrtiz.
 	señalDePrecaucion := SeñalDePrecaucionDeScalabriniOrtiz.
 	señalDeAvance := SeñalDeAvanceDeScalabriniOrtiz.
+	tiempoDeCadaSeñal := 1.
+	señalDeDetencion := SeñalDeDetencionDeScalabriniOrtiz.
+	señalDePrecaucion := SeñalDePrecaucionDeScalabriniOrtiz.
+	señalDeAvance := SeñalDeAvanceDeScalabriniOrtiz.
 	tiempoDeCadaSeñal := 1.! !
 
 
+!classDefinition: #SeñalDeAvance category: #'ControladorDeTransito-ClassBased'!
+DenotativeObjectMorph subclass: #SeñalDeAvance
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ControladorDeTransito-ClassBased'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SeñalDeAvance class' category: #'ControladorDeTransito-ClassBased'!
+SeñalDeAvance class
+	instanceVariableNames: ''!
+
+!SeñalDeAvance class methodsFor: 'morph' stamp: 'GSC 4/1/2019 20:55:28'!
+createMorph
+
+	^EllipseMorph new
+		color: Color black;
+		yourself! !
+
+
+!SeñalDeAvance class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:55:28'!
+apagar
+	self color: Color black.! !
+
+!SeñalDeAvance class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:55:28'!
+prender
+	self color: Color green.! !
+
+
+!SeñalDeAvance class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	morph := nil.! !
+
+
 !classDefinition: #SeñalDeAvanceDeCorrientes category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SeñalDeAvanceDeCorrientes
+SeñalDeAvance subclass: #SeñalDeAvanceDeCorrientes
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -275,16 +295,7 @@ createMorph
 		yourself! !
 
 
-!SeñalDeAvanceDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:55:01'!
-apagar
-	self color: Color black.! !
-
-!SeñalDeAvanceDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:55:01'!
-prender
-	self color: Color green.! !
-
-
-!SeñalDeAvanceDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SeñalDeAvanceDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -292,7 +303,7 @@ initializeCollaboratorsFromFile
 
 
 !classDefinition: #SeñalDeAvanceDeScalabriniOrtiz category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SeñalDeAvanceDeScalabriniOrtiz
+SeñalDeAvance subclass: #SeñalDeAvanceDeScalabriniOrtiz
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -312,16 +323,44 @@ createMorph
 		yourself! !
 
 
-!SeñalDeAvanceDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/25/2019 21:55:52'!
+!SeñalDeAvanceDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	morph := nil.! !
+
+
+!classDefinition: #SeñalDeDetencion category: #'ControladorDeTransito-ClassBased'!
+DenotativeObjectMorph subclass: #SeñalDeDetencion
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ControladorDeTransito-ClassBased'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SeñalDeDetencion class' category: #'ControladorDeTransito-ClassBased'!
+SeñalDeDetencion class
+	instanceVariableNames: ''!
+
+!SeñalDeDetencion class methodsFor: 'morph' stamp: 'GSC 4/1/2019 20:57:48'!
+createMorph
+
+	^EllipseMorph new
+		color: Color black;
+		yourself! !
+
+
+!SeñalDeDetencion class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:57:48'!
 apagar
 	self color: Color black.! !
 
-!SeñalDeAvanceDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/25/2019 21:56:41'!
+!SeñalDeDetencion class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:57:48'!
 prender
-	self color: Color green.! !
+	self color: Color red.! !
 
 
-!SeñalDeAvanceDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SeñalDeDetencion class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -329,7 +368,7 @@ initializeCollaboratorsFromFile
 
 
 !classDefinition: #SeñalDeDetencionDeCorrientes category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SeñalDeDetencionDeCorrientes
+SeñalDeDetencion subclass: #SeñalDeDetencionDeCorrientes
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -349,16 +388,7 @@ createMorph
 		yourself! !
 
 
-!SeñalDeDetencionDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:55:11'!
-apagar
-	self color: Color black.! !
-
-!SeñalDeDetencionDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:55:11'!
-prender
-	self color: Color red.! !
-
-
-!SeñalDeDetencionDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SeñalDeDetencionDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -366,7 +396,7 @@ initializeCollaboratorsFromFile
 
 
 !classDefinition: #SeñalDeDetencionDeScalabriniOrtiz category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SeñalDeDetencionDeScalabriniOrtiz
+SeñalDeDetencion subclass: #SeñalDeDetencionDeScalabriniOrtiz
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -386,16 +416,44 @@ createMorph
 		yourself! !
 
 
-!SeñalDeDetencionDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/25/2019 21:56:08'!
+!SeñalDeDetencionDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	morph := nil.! !
+
+
+!classDefinition: #SeñalDePrecaucion category: #'ControladorDeTransito-ClassBased'!
+DenotativeObjectMorph subclass: #SeñalDePrecaucion
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ControladorDeTransito-ClassBased'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SeñalDePrecaucion class' category: #'ControladorDeTransito-ClassBased'!
+SeñalDePrecaucion class
+	instanceVariableNames: ''!
+
+!SeñalDePrecaucion class methodsFor: 'morph' stamp: 'GSC 4/1/2019 20:58:47'!
+createMorph
+
+	^EllipseMorph new
+		color: Color black;
+		yourself! !
+
+
+!SeñalDePrecaucion class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:58:47'!
 apagar
 	self color: Color black.! !
 
-!SeñalDeDetencionDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/25/2019 21:56:52'!
+!SeñalDePrecaucion class methodsFor: 'services' stamp: 'GSC 4/1/2019 20:58:47'!
 prender
-	self color: Color red.! !
+	self color: Color yellow.! !
 
 
-!SeñalDeDetencionDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SeñalDePrecaucion class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -403,7 +461,7 @@ initializeCollaboratorsFromFile
 
 
 !classDefinition: #SeñalDePrecaucionDeCorrientes category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SeñalDePrecaucionDeCorrientes
+SeñalDePrecaucion subclass: #SeñalDePrecaucionDeCorrientes
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -423,16 +481,7 @@ createMorph
 		yourself! !
 
 
-!SeñalDePrecaucionDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:55:18'!
-apagar
-	self color: Color black.! !
-
-!SeñalDePrecaucionDeCorrientes class methodsFor: 'services' stamp: 'GSC 3/26/2019 00:55:18'!
-prender
-	self color: Color yellow.! !
-
-
-!SeñalDePrecaucionDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SeñalDePrecaucionDeCorrientes class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -440,7 +489,7 @@ initializeCollaboratorsFromFile
 
 
 !classDefinition: #SeñalDePrecaucionDeScalabriniOrtiz category: #'ControladorDeTransito-ClassBased'!
-DenotativeObjectMorph subclass: #SeñalDePrecaucionDeScalabriniOrtiz
+SeñalDePrecaucion subclass: #SeñalDePrecaucionDeScalabriniOrtiz
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -460,27 +509,22 @@ createMorph
 		yourself! !
 
 
-!SeñalDePrecaucionDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/25/2019 21:56:17'!
-apagar
-	self color: Color black.! !
-
-!SeñalDePrecaucionDeScalabriniOrtiz class methodsFor: 'services' stamp: 'GSC 3/25/2019 21:57:05'!
-prender
-	self color: Color yellow.! !
-
-
-!SeñalDePrecaucionDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 20:44:16'!
+!SeñalDePrecaucionDeScalabriniOrtiz class methodsFor: 'as yet unclassified' stamp: 'GSC 4/1/2019 21:02:32'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
 	morph := nil.! !
 
 ControladorDeTransito initializeAfterFileIn!
+Semaforo initializeAfterFileIn!
 SemaforoDeCorrientes initializeAfterFileIn!
 SemaforoDeScalabriniOrtiz initializeAfterFileIn!
+SeñalDeAvance initializeAfterFileIn!
 SeñalDeAvanceDeCorrientes initializeAfterFileIn!
 SeñalDeAvanceDeScalabriniOrtiz initializeAfterFileIn!
+SeñalDeDetencion initializeAfterFileIn!
 SeñalDeDetencionDeCorrientes initializeAfterFileIn!
 SeñalDeDetencionDeScalabriniOrtiz initializeAfterFileIn!
+SeñalDePrecaucion initializeAfterFileIn!
 SeñalDePrecaucionDeCorrientes initializeAfterFileIn!
 SeñalDePrecaucionDeScalabriniOrtiz initializeAfterFileIn!
