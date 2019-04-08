@@ -86,25 +86,25 @@ setUp
 	fiftyMilliseconds := 50 * millisecond.
 	oneHundredMilliseconds := 100 * millisecond.! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'dhs 4/4/2019 21:21:51'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'dhs 4/8/2019 08:55:57'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
 	| customerBook |
 
 	customerBook := anEmptyCustomerBook.
 	
-	self assert: [customerBook addCustomerNamed: johnLennon ] takesLessThan: fiftyMilliseconds. 
+	self assert: [customerBook addCustomerNamed: johnLennon ] takesLessThan: 50*millisecond . 
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'dhs 4/4/2019 21:32:52'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'dhs 4/8/2019 08:56:09'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
 	| customerBook |
 	
 	customerBook := aCustomerBookWithPaulMcCartney .
 	
-	self assert: [customerBook removeCustomerNamed: paulMcCartney] takesLessThan: oneHundredMilliseconds 
+	self assert: [customerBook removeCustomerNamed: paulMcCartney] takesLessThan: 100*millisecond 
 	
 ! !
 
