@@ -16,7 +16,7 @@ Error subclass: #NotFound
 
 !classDefinition: #CustomerBookTest category: #'CodigoRepetido-Ejercicio'!
 TestCase subclass: #CustomerBookTest
-	instanceVariableNames: 'anEmptyCustomerBook johnLennon paulMcCartney fiftyMilliseconds aCustomerBookWithPaulMcCartney aCustomerBookWithJohnLennon oneHundredMilliseconds'
+	instanceVariableNames: 'anEmptyCustomerBook johnLennon paulMcCartney aCustomerBookWithPaulMcCartney aCustomerBookWithJohnLennon'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
@@ -71,7 +71,7 @@ assert: aBlock takesLessThan: aTimeInterval
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'dhs 4/4/2019 21:32:40'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'dhs 4/8/2019 13:37:54'!
 setUp
 	anEmptyCustomerBook := CustomerBook new.
 	johnLennon := 'John Lennon'.
@@ -82,9 +82,7 @@ setUp
 	
 	aCustomerBookWithJohnLennon := CustomerBook new.
 	aCustomerBookWithJohnLennon addCustomerNamed: johnLennon.
-	
-	fiftyMilliseconds := 50 * millisecond.
-	oneHundredMilliseconds := 100 * millisecond.! !
+! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'dhs 4/8/2019 08:55:57'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
