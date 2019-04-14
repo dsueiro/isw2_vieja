@@ -459,9 +459,9 @@ multiplyToEntero: anEntero
 	^self class with: value * anEntero integerValue
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'dhs 4/11/2019 20:37:54'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'dhs 4/14/2019 20:43:57'!
 multiplyToFraccion: aMultiplier
-	^(aMultiplier numerator * self) / (aMultiplier denominator)
+	^ self * aMultiplier
 
 	! !
 
