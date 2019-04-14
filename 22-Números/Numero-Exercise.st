@@ -410,10 +410,10 @@ Numero subclass: #Entero
 	^aDivisor divideEntero: self
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:55'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'dhs 4/14/2019 14:25:55'!
 // aDivisor 
 	
-	^self class with: value // aDivisor integerValue! !
+	^self class with: self integerValue // aDivisor integerValue! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'dhs 4/11/2019 20:12:35'!
 addToEntero: anAdder 
@@ -449,10 +449,10 @@ fibonacci
 	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:00'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'dhs 4/14/2019 14:25:27'!
 greatestCommonDivisorWith: anEntero 
 	
-	^self class with: (value gcd: anEntero integerValue)! !
+	^self class with: (self integerValue gcd: anEntero integerValue)! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'dhs 4/11/2019 20:07:31'!
 multiplyToEntero: anEntero
@@ -527,6 +527,37 @@ isZero
 	
 	^value = 0! !
 
+
+!Entero methodsFor: 'number creation' stamp: 'dhs 4/14/2019 14:16:12'!
+createNumberDividedBy: aDivisor
+	^Fraccion new initializeWith: self over: aDivisor
+	! !
+
+!Entero methodsFor: 'number creation' stamp: 'dhs 4/14/2019 13:58:15'!
+createNumberDividing: aDividend
+	| greatestCommonDivisor numerator denominator|
+	
+	greatestCommonDivisor := aDividend greatestCommonDivisorWith: self. 
+	numerator := aDividend // greatestCommonDivisor.
+	denominator := self // greatestCommonDivisor.
+
+	^denominator createNumberDividingCoprime: numerator. 
+
+	! !
+
+!Entero methodsFor: 'number creation' stamp: 'dhs 4/14/2019 14:14:38'!
+createNumberDividingCoprime: aDividend
+	self assert: (self isCoprimeWith: aDividend).
+	
+	^aDividend createNumberDividedBy: self.
+! !
+
+!Entero methodsFor: 'number creation' stamp: 'dhs 4/14/2019 14:06:25'!
+isCoprimeWith: anEntero
+	^(self greatestCommonDivisorWith: anEntero) integerValue = 1.
+	
+	! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: #'Numero-Exercise'!
@@ -572,6 +603,12 @@ fibonacci
 isNegative
 	^true! !
 
+
+!Negativo methodsFor: 'number creation' stamp: 'dhs 4/14/2019 13:48:46'!
+createNumberDividing: aDividend
+	^aDividend negated / self negated
+! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Negativo class' category: #'Numero-Exercise'!
@@ -616,20 +653,37 @@ Positivo subclass: #Cero
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!Cero methodsFor: 'as yet unclassified' stamp: 'dhs 4/11/2019 21:39:43'!
-initialize
-	self initalizeWith: 0! !
-
-
 !Cero methodsFor: 'value' stamp: 'dhs 4/13/2019 10:07:21'!
 integerValue
 	^0! !
 
 
+!Cero methodsFor: 'initialization' stamp: 'dhs 4/14/2019 14:27:24'!
+initialize
+	value := 0! !
+
+
+!Cero methodsFor: 'number creation' stamp: 'dhs 4/14/2019 14:15:22'!
+createNumberDividedBy: aDivisor
+	^self! !
+
+!Cero methodsFor: 'number creation' stamp: 'dhs 4/14/2019 13:47:03'!
+createNumberDividing: aDividend
+	self error: Fraccion canNotDivideByZeroErrorDescription ! !
+
 
 !Cero methodsFor: 'arithmetic operations' stamp: 'dhs 4/13/2019 10:09:48'!
 fibonacci
 	^Uno new! !
+
+
+!Cero methodsFor: 'testing' stamp: 'dhs 4/14/2019 14:18:10'!
+isOne
+	^false! !
+
+!Cero methodsFor: 'testing' stamp: 'dhs 4/14/2019 14:18:02'!
+isZero
+	^true! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -668,9 +722,13 @@ Positivo subclass: #Uno
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!Uno methodsFor: 'as yet unclassified' stamp: 'dhs 4/11/2019 21:39:54'!
-initialize
-	self initalizeWith: 1! !
+!Uno methodsFor: 'testing' stamp: 'dhs 4/14/2019 14:19:12'!
+isOne
+	^true! !
+
+!Uno methodsFor: 'testing' stamp: 'dhs 4/14/2019 14:19:23'!
+isZero
+	^false! !
 
 
 !Uno methodsFor: 'value' stamp: 'dhs 4/13/2019 10:09:23'!
@@ -681,6 +739,16 @@ integerValue
 !Uno methodsFor: 'arithmetic operations' stamp: 'dhs 4/11/2019 21:19:24'!
 fibonacci
 	^self! !
+
+
+!Uno methodsFor: 'number creation' stamp: 'dhs 4/14/2019 14:09:41'!
+createNumberDividingCoprime: aDividend
+	^aDividend! !
+
+
+!Uno methodsFor: 'initialization' stamp: 'dhs 4/14/2019 14:27:43'!
+initialize
+	value:= 1! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -840,21 +908,7 @@ printOn: aStream
 Fraccion class
 	instanceVariableNames: ''!
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'dhs 4/14/2019 12:44:34'!
+!Fraccion class methodsFor: 'instance creation' stamp: 'dhs 4/14/2019 13:40:15'!
 with: aDividend over: aDivisor
-
-	| greatestCommonDivisor numerator denominator |
-	
-	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ].
-	aDividend isZero ifTrue: [ ^aDividend ].
-	
-	aDivisor isNegative ifTrue:[ ^aDividend negated / aDivisor negated].
-	
-	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
-	numerator := aDividend // greatestCommonDivisor.
-	denominator := aDivisor // greatestCommonDivisor.
-	
-	denominator isOne ifTrue: [ ^numerator ].
-
-	^self new initializeWith: numerator over: denominator
-	! !
+	^aDivisor createNumberDividing: aDividend
+! !
