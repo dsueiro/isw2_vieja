@@ -492,8 +492,8 @@ hash
 	^value hash! !
 
 
-!Entero methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 20:09'!
-initalizeWith: aValue 
+!Entero methodsFor: 'initialization' stamp: 'dhs 4/14/2019 15:05:00'!
+initializeWith: aValue 
 	
 	value := aValue! !
 
@@ -564,7 +564,7 @@ isCoprimeWith: anEntero
 Entero class
 	instanceVariableNames: ''!
 
-!Entero class methodsFor: 'instance creation' stamp: 'dhs 4/14/2019 12:33:37'!
+!Entero class methodsFor: 'instance creation' stamp: 'dhs 4/14/2019 14:46:03'!
 acceptsValue: aValue 
 	
 	self subclassResponsibility ! !
@@ -573,17 +573,21 @@ acceptsValue: aValue
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'dhs 4/14/2019 12:28:18'!
+!Entero class methodsFor: 'instance creation' stamp: 'dhs 4/14/2019 15:06:29'!
 with: aValue 
+	| subclassToUse |
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
+	"Por eso no la sacamos - Gonzalo y Diego" 
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
 	
-	aValue = 1 ifTrue: [ ^Uno new]. 
-	aValue = 0 ifTrue: [ ^Cero new]. 
-	aValue negative ifTrue: [^Negativo new initalizeWith: aValue].
+	subclassToUse := self allSubclasses detect: [ :aClass | aClass acceptsValue: aValue ]
+		ifNone: [
+			self error: 'Tipo de entero no contemplado'.
+		].
 	
-	^PositivoMayorQueUno new initalizeWith: aValue! !
+	^subclassToUse new initializeWith: aValue
+! !
 
 
 !classDefinition: #Negativo category: #'Numero-Exercise'!
@@ -640,6 +644,11 @@ isNegative
 !classDefinition: 'Positivo class' category: #'Numero-Exercise'!
 Positivo class
 	instanceVariableNames: ''!
+
+!Positivo class methodsFor: 'instance creation' stamp: 'dhs 4/14/2019 15:01:02'!
+acceptsValue: aValue
+	"No acepta ningun valor - es abstracta. Pero si no implementa esto 'rompe' la creacion de Entero"
+	^false! !
 
 !Positivo class methodsFor: 'instance creation' stamp: 'dhs 4/14/2019 12:23:20'!
 with: aValue
@@ -867,10 +876,11 @@ numerator
 	^ numerator! !
 
 
-!Fraccion methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 22:54'!
+!Fraccion methodsFor: 'initialization' stamp: 'dhs 4/14/2019 14:33:35'!
 initializeWith: aNumerator over: aDenominator
 
 	"Estas precondiciones estan por si se comenten errores en la implementacion - Hernan"
+	"Parece entonces mas que overkilling sacar estos ifs - Gonzalo y Diego" 
 	aNumerator isZero ifTrue: [ self error: 'una fraccion no puede ser cero' ].
 	aDenominator isOne ifTrue: [ self error: 'una fraccion no puede tener denominador 1 porque sino es un entero' ].
 	
