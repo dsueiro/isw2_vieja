@@ -144,6 +144,86 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 19:46:38'!
+test01CannotLookUpEmptySentence
+	|sentenceFinder|
+	sentenceFinder  := SentenceFinderByPrefix  new.
+	self
+		should: [ sentenceFinder find: '' ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix cannotLookUpEmptyPrefix ]
+! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 19:46:59'!
+test02CannotLookUpWordWithSpaces
+	|sentenceFinder|
+	sentenceFinder  := SentenceFinderByPrefix  new.
+	self
+		should: [ sentenceFinder find: 'winter is coming']
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix cannotLookUpPrefixWithSpaces ]
+! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 20:08:55'!
+test03MatchesSearchedSentenceAndIsCaseSensitive
+	|sentenceFinder result|
+	sentenceFinder  := SentenceFinderByPrefix  new.
+	sentenceFinder push: 'winter is coming'.
+	sentenceFinder push: 'winning is everything'.
+	sentenceFinder push: 'The winds of Winter'.
+	sentenceFinder push: 'Winter is here'.  
+
+	result := sentenceFinder find: 'Wint'.
+	self assert: (result isKindOf: Collection).
+	self assert: result size equals: 1.
+	self assert: (result includes: 'Winter is here')! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 19:37:24'!
+test04FindKeepsStackSize
+	|sentenceFinder|
+	sentenceFinder  := SentenceFinderByPrefix  new.
+	sentenceFinder push: 'winter is coming'.
+	sentenceFinder push: 'winning is everything'.
+	sentenceFinder push: 'The winds of Winter'.
+	sentenceFinder push: 'Winter is here'.  
+
+	sentenceFinder find: 'Wint'.
+	
+	self assert: sentenceFinder size equals: 4! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 19:37:52'!
+test05FindKeepsSentencesOrder
+	|sentenceFinder|
+	sentenceFinder  := SentenceFinderByPrefix  new.
+	sentenceFinder push: 'winter is coming'.
+	sentenceFinder push: 'winning is everything'.
+	sentenceFinder push: 'The winds of Winter'.
+	sentenceFinder push: 'Winter is here'.  
+
+	sentenceFinder find: 'Wint'.
+	
+	self assert: sentenceFinder pop equals: 'Winter is here'.
+	self assert: sentenceFinder pop equals: 'The winds of Winter'.
+	self assert: sentenceFinder pop equals: 'winning is everything'.
+	self assert: sentenceFinder pop equals: 'winter is coming'.
+	self assert: sentenceFinder isEmpty.! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 19:40:52'!
+test06TheResultOfLookingForANonmatchingPrefixIsAnEmptyCollection
+	|sentenceFinder result|
+	sentenceFinder  := SentenceFinderByPrefix  new.
+	sentenceFinder push: 'winter is coming'.
+	sentenceFinder push: 'winning is everything'.
+	sentenceFinder push: 'The winds of Winter'.
+	sentenceFinder push: 'Winter is here'.  
+
+	result:= sentenceFinder find: 'xx'.
+	result isKindOf: Collection.
+	result isEmpty.
+! !
+
 
 !classDefinition: #OOStack category: #'Stack-Exercise'!
 Object subclass: #OOStack
@@ -194,6 +274,54 @@ OOStack class
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+
+!classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
+OOStack subclass: #SentenceFinderByPrefix
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefix methodsFor: 'accessing' stamp: 'dhs 4/21/2019 20:13:59'!
+find: prefixToSearch
+	|tempStack matchesFound|
+	prefixToSearch isEmpty ifTrue: [self error: self class cannotLookUpEmptyPrefix]. 
+	(prefixToSearch includes: $ ) ifTrue: [self error: self class cannotLookUpPrefixWithSpaces ].
+	
+	matchesFound:= OrderedCollection new.
+	tempStack := self class new.
+	
+	[self isEmpty] whileFalse: [ 
+		tempStack push: (self pop).
+		(tempStack top beginsWith: prefixToSearch) ifTrue: [
+			matchesFound add: tempStack top.
+		]
+	].
+
+	[tempStack isEmpty] whileFalse: [
+		self push: (tempStack pop)
+	].
+
+	^matchesFound
+	
+	
+	
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SentenceFinderByPrefix class' category: #'Stack-Exercise'!
+SentenceFinderByPrefix class
+	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 19:46:23'!
+cannotLookUpEmptyPrefix
+	^ 'No se puede buscar un prefijo vacío'! !
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'dhs 4/21/2019 19:47:22'!
+cannotLookUpPrefixWithSpaces
+	^ 'No se puede buscar un prefijo con espacios'! !
 
 
 !classDefinition: #OOStackElement category: #'Stack-Exercise'!
@@ -282,11 +410,3 @@ OOStackElementWithValue class
 !OOStackElementWithValue class methodsFor: 'instance creation' stamp: 'dhs 4/21/2019 18:48:53'!
 with: value andPrevious: previousStackTop
 	^self basicNew initializeWith: value andTop: previousStackTop! !
-
-
-!classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
-Object subclass: #SentenceFinderByPrefix
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
