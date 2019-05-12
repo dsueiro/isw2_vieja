@@ -200,18 +200,43 @@ test15
 	
 	! !
 
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 23:51:52'!
+test16
+	| marsRover |
+	marsRover := MarsRover at: 1@1 heading: #west.
+	
+	self should: [
+		marsRover sendCommand: 'xf'
+	]
+	raise: Error - MessageNotUnderstood
+	withExceptionDo: [ :exception |
+		self assert: marsRover position equals: 1@1.
+		self assert: marsRover heading equals: #west.  
+	]
+	description: MarsRover unknownCommand.
+	
+	
+	! !
+
 
 !classDefinition: #MarsRover category: #MarsRover!
 Object subclass: #MarsRover
-	instanceVariableNames: 'position heading'
+	instanceVariableNames: 'position heading moves'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:55:23'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:38:15'!
 at: aPoint heading: aDirection 
 	position := aPoint.
 	heading := aDirection.
+	
+	moves := #(
+		(MoveBackwards new)
+		(MoveForward new)
+		(TurnLeft new)
+		(TurnRight new)
+	)
 		! !
 
 !MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:46:17'!
@@ -253,27 +278,31 @@ moveForward
 position
 	^position! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 09:37:22'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 23:49:33'!
+processCommand: aCommand
+	aCommand = $f ifTrue: [
+		^self moveForward.
+	].	
+	
+	aCommand = $b ifTrue: [
+		^self moveBackwards
+	].			
+
+	aCommand = $l ifTrue: [
+		^self turnLeft
+	].			
+
+	aCommand = $r ifTrue: [
+		^self turnRight
+	].			
+ 
+	self error: self class unknownCommand .	
+	
+! !
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 23:32:09'!
 sendCommand: aString
-	aString do: [ :aCommand |
-		aCommand = $f ifTrue: [
-			self moveForward.
-		].	
-		
-		aCommand = $b ifTrue: [
-			self moveBackwards
-		].			
-	
-		aCommand = $l ifTrue: [
-			self turnLeft
-		].			
-	
-		aCommand = $r ifTrue: [
-			self turnRight
-		].			
-	
-	]. 
-	
+	aString do: [ :aCommand | self processCommand: aCommand ].
 ! !
 
 !MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:58:36'!
@@ -315,3 +344,72 @@ MarsRover class
 !MarsRover class methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:24:37'!
 at: aPosition heading: aDirection 
 	^self new at: aPosition heading: aDirection.! !
+
+!MarsRover class methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 12:26:56'!
+unknownCommand
+	^'Unknown Command' ! !
+
+
+!classDefinition: #MarsRoverMove category: #MarsRover!
+Object subclass: #MarsRoverMove
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+
+!classDefinition: #MoveBackwards category: #MarsRover!
+MarsRoverMove subclass: #MoveBackwards
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:42:42'!
+handles: command
+	^command == $b
+	! !
+
+!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:29:06'!
+move: rover
+	rover moveBackwards 
+	! !
+
+
+!classDefinition: #MoveForward category: #MarsRover!
+MarsRoverMove subclass: #MoveForward
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!MoveForward methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:30:23'!
+move: rover
+	rover moveForward 
+	! !
+
+
+!classDefinition: #TurnLeft category: #MarsRover!
+MarsRoverMove subclass: #TurnLeft
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!TurnLeft methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:30:36'!
+move: rover
+	rover turnLeft
+	! !
+
+
+!classDefinition: #TurnRight category: #MarsRover!
+MarsRoverMove subclass: #TurnRight
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'MarsRover'!
+
+!TurnRight methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:30:51'!
+move: rover
+	rover turnRight 
+	! !
