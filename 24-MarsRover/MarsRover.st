@@ -221,22 +221,15 @@ test16
 
 !classDefinition: #MarsRover category: #MarsRover!
 Object subclass: #MarsRover
-	instanceVariableNames: 'position heading moves'
+	instanceVariableNames: 'position heading processors'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:38:15'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:21:47'!
 at: aPoint heading: aDirection 
 	position := aPoint.
 	heading := aDirection.
-	
-	moves := #(
-		(MoveBackwards new)
-		(MoveForward new)
-		(TurnLeft new)
-		(TurnRight new)
-	)
 		! !
 
 !MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:46:17'!
@@ -259,6 +252,15 @@ direction
 heading
 	^heading ! !
 
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:40:47'!
+initialize
+	processors := Array 
+		with: MoveBackwards new 
+		with: MoveForward new
+		with: TurnLeft new
+		with: TurnRight new.
+		! !
+
 !MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:25:42'!
 isAt: aPoint heading: aSymbol 
 	! !
@@ -278,25 +280,15 @@ moveForward
 position
 	^position! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 23:49:33'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:41:06'!
 processCommand: aCommand
-	aCommand = $f ifTrue: [
-		^self moveForward.
-	].	
+	| command |
+	command := processors  detect: [ :processor | processor handles: aCommand ]
+		ifNone: [ 
+			self error: self class unknownCommand .	
+		].
 	
-	aCommand = $b ifTrue: [
-		^self moveBackwards
-	].			
-
-	aCommand = $l ifTrue: [
-		^self turnLeft
-	].			
-
-	aCommand = $r ifTrue: [
-		^self turnRight
-	].			
- 
-	self error: self class unknownCommand .	
+	command move: self
 	
 ! !
 
@@ -357,6 +349,15 @@ Object subclass: #MarsRoverMove
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
+!MarsRoverMove methodsFor: 'processing' stamp: 'dhs 5/12/2019 00:51:20'!
+move
+	self subclassResponsibility ! !
+
+
+!MarsRoverMove methodsFor: 'testing' stamp: 'dhs 5/12/2019 00:51:07'!
+handles: aCommand
+	self subclassResponsibility ! !
+
 
 !classDefinition: #MoveBackwards category: #MarsRover!
 MarsRoverMove subclass: #MoveBackwards
@@ -365,14 +366,15 @@ MarsRoverMove subclass: #MoveBackwards
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:42:42'!
-handles: command
-	^command == $b
-	! !
-
-!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:29:06'!
+!MoveBackwards methodsFor: 'processing' stamp: 'dhs 5/11/2019 11:29:06'!
 move: rover
 	rover moveBackwards 
+	! !
+
+
+!MoveBackwards methodsFor: 'testing' stamp: 'dhs 5/11/2019 11:42:42'!
+handles: command
+	^command == $b
 	! !
 
 
@@ -383,7 +385,13 @@ MarsRoverMove subclass: #MoveForward
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MoveForward methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:30:23'!
+!MoveForward methodsFor: 'testing' stamp: 'dhs 5/12/2019 00:48:53'!
+handles: command
+	^command == $f
+	! !
+
+
+!MoveForward methodsFor: 'processing' stamp: 'dhs 5/11/2019 11:30:23'!
 move: rover
 	rover moveForward 
 	! !
@@ -396,7 +404,13 @@ MarsRoverMove subclass: #TurnLeft
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!TurnLeft methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:30:36'!
+!TurnLeft methodsFor: 'testing' stamp: 'dhs 5/12/2019 00:49:07'!
+handles: command
+	^command == $l
+	! !
+
+
+!TurnLeft methodsFor: 'processing' stamp: 'dhs 5/11/2019 11:30:36'!
 move: rover
 	rover turnLeft
 	! !
@@ -409,7 +423,13 @@ MarsRoverMove subclass: #TurnRight
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!TurnRight methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 11:30:51'!
+!TurnRight methodsFor: 'testing' stamp: 'dhs 5/12/2019 00:49:23'!
+handles: command
+	^command == $r
+	! !
+
+
+!TurnRight methodsFor: 'processing' stamp: 'dhs 5/11/2019 11:30:51'!
 move: rover
 	rover turnRight 
 	! !
