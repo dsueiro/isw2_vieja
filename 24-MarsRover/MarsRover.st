@@ -5,8 +5,8 @@ TestCase subclass: #MarsRoverTest
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:27:37'!
-test01
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:58:20'!
+test01GivenAnEmptyListOfCommandsTheRoverStaysQuiet
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #north.
 	
@@ -18,8 +18,8 @@ test01
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:39:14'!
-test02
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:58:54'!
+test02GoingForwardWhileHeadingNorth
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #north.
 	
@@ -31,8 +31,8 @@ test02
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:57:57'!
-test03
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:25:02'!
+test03GoingBackwardsWhileHeadingNorth
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #north.
 	
@@ -44,8 +44,8 @@ test03
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:26:10'!
-test04
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:25:36'!
+test04SendingManyCommands
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #north.
 	
@@ -57,8 +57,8 @@ test04
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:38:58'!
-test05
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:30:34'!
+test05GoingForwardWhileHeadingEast
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #east.
 	
@@ -70,8 +70,8 @@ test05
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:39:28'!
-test06
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:31:07'!
+test06GoingForwardWhileHeadingWest
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #west.
 	
@@ -83,8 +83,8 @@ test06
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:48:41'!
-test07
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:35:54'!
+test07GoingBackwards
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #west.
 	
@@ -96,8 +96,8 @@ test07
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:50:34'!
-test08
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:35:19'!
+test08TurningLeftWhileHeadingNorth
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #north.
 	
@@ -109,8 +109,8 @@ test08
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:53:54'!
-test09
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:34:48'!
+test09TurningLeftWhileHeadingWest
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #west.
 	
@@ -122,8 +122,8 @@ test09
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:56:49'!
-test10
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:34:19'!
+test10TurningLeftWhileHeadingSouth
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #south.
 	
@@ -135,8 +135,8 @@ test10
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:57:53'!
-test11
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:33:42'!
+test11TurningLeftWhileHeadingEast
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #east.
 	
@@ -148,8 +148,8 @@ test11
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 09:39:49'!
-test12
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:33:21'!
+test12TurningRightWhileHeadingNorth
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #north.
 	
@@ -161,8 +161,8 @@ test12
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 09:41:17'!
-test13
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:37:29'!
+test13TurningRightWhileHeadingEast
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #east.
 	
@@ -174,8 +174,8 @@ test13
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 09:42:08'!
-test14
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:32:19'!
+test14TurningRightWhileHeadingSouth
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #south.
 	
@@ -187,8 +187,8 @@ test14
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 10:05:30'!
-test15
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:31:54'!
+test15TurningRighWhileHeadingWest
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #west.
 	
@@ -200,8 +200,8 @@ test15
 	
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 23:51:52'!
-test16
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 01:26:45'!
+test16SendingUnknownCommand
 	| marsRover |
 	marsRover := MarsRover at: 1@1 heading: #west.
 	
@@ -226,13 +226,49 @@ Object subclass: #MarsRover
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:21:47'!
-at: aPoint heading: aDirection 
-	position := aPoint.
-	heading := aDirection.
-		! !
+!MarsRover methodsFor: 'moving' stamp: 'dhs 5/11/2019 00:48:08'!
+moveBackwards	
+	position := position - self direction
+	
+! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:46:17'!
+!MarsRover methodsFor: 'moving' stamp: 'dhs 5/11/2019 00:46:41'!
+moveForward
+	position := position + self direction
+! !
+
+!MarsRover methodsFor: 'moving' stamp: 'dhs 5/11/2019 00:58:36'!
+turnLeft
+	heading = #north ifTrue: [
+		^heading := #west
+	].
+	heading = #west ifTrue: [
+		^heading := #south
+	].
+	heading = #south ifTrue: [
+		^heading := #east
+	].
+	heading = #east ifTrue: [
+		^heading := #north
+	].! !
+
+!MarsRover methodsFor: 'moving' stamp: 'dhs 5/11/2019 10:01:38'!
+turnRight
+	heading = #north ifTrue: [
+		^heading := #east
+	].
+	heading = #east ifTrue: [
+		^heading := #south
+	].
+	heading = #south ifTrue: [
+		^heading := #west
+	].
+	heading = #west ifTrue: [
+		^heading := #north
+	].! !
+
+
+!MarsRover methodsFor: 'testing' stamp: 'dhs 5/11/2019 00:46:17'!
 direction
 	heading  = #north ifTrue: [
 		^ 0@1
@@ -248,39 +284,16 @@ direction
 	].
 ! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:36:17'!
+!MarsRover methodsFor: 'testing' stamp: 'dhs 5/11/2019 00:36:17'!
 heading
 	^heading ! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:40:47'!
-initialize
-	processors := Array 
-		with: MoveBackwards new 
-		with: MoveForward new
-		with: TurnLeft new
-		with: TurnRight new.
-		! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:25:42'!
-isAt: aPoint heading: aSymbol 
-	! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:48:08'!
-moveBackwards	
-	position := position - self direction
-	
-! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:46:41'!
-moveForward
-	position := position + self direction
-! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/10/2019 23:57:22'!
+!MarsRover methodsFor: 'testing' stamp: 'dhs 5/10/2019 23:57:22'!
 position
 	^position! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/12/2019 00:41:06'!
+
+!MarsRover methodsFor: 'command processing' stamp: 'dhs 5/12/2019 00:41:06'!
 processCommand: aCommand
 	| command |
 	command := processors  detect: [ :processor | processor handles: aCommand ]
@@ -292,40 +305,27 @@ processCommand: aCommand
 	
 ! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 23:32:09'!
+!MarsRover methodsFor: 'command processing' stamp: 'dhs 5/11/2019 23:32:09'!
 sendCommand: aString
 	aString do: [ :aCommand | self processCommand: aCommand ].
 ! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 00:58:36'!
-turnLeft
-	heading = #north ifTrue: [
-		^heading := #west
-	].
-	heading = #west ifTrue: [
-		^heading := #south
-	].
-	heading = #south ifTrue: [
-		^heading := #east
-	].
-	heading = #east ifTrue: [
-		^heading := #north
-	].! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'dhs 5/11/2019 10:01:38'!
-turnRight
-	heading = #north ifTrue: [
-		^heading := #east
-	].
-	heading = #east ifTrue: [
-		^heading := #south
-	].
-	heading = #south ifTrue: [
-		^heading := #west
-	].
-	heading = #west ifTrue: [
-		^heading := #north
-	].! !
+
+!MarsRover methodsFor: 'initialization' stamp: 'dhs 5/12/2019 00:21:47'!
+at: aPoint heading: aDirection 
+	position := aPoint.
+	heading := aDirection.
+		! !
+
+!MarsRover methodsFor: 'initialization' stamp: 'dhs 5/12/2019 00:40:47'!
+initialize
+	processors := Array 
+		with: MoveBackwards new 
+		with: MoveForward new
+		with: TurnLeft new
+		with: TurnRight new.
+		! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
