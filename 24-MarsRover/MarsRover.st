@@ -5,205 +5,205 @@ TestCase subclass: #MarsRoverTest
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:25:28'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:41'!
 test01GivenAnEmptyListOfCommandsTheRoverStaysQuiet
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: NorthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingNorth new.
 	
 	marsRover sendCommand: ''.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: NorthHeading new.
+	self assert: marsRover heading equals: HeadingNorth new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:26:22'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:41'!
 test02GoingForwardWhileHeadingNorth
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: NorthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingNorth new.
 	
 	marsRover sendCommand: 'f'.
 	
 	self assert: marsRover position equals: 1@2.
-	self assert: marsRover heading equals: NorthHeading new.
+	self assert: marsRover heading equals: HeadingNorth new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:26:41'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:41'!
 test03GoingBackwardsWhileHeadingNorth
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: NorthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingNorth new.
 	
 	marsRover sendCommand: 'b'.
 	
 	self assert: marsRover position equals: 1@0.
-	self assert: marsRover heading equals: NorthHeading new.
+	self assert: marsRover heading equals: HeadingNorth new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:26:56'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:41'!
 test04SendingManyCommands
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: NorthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingNorth new.
 	
 	marsRover sendCommand: 'ff'.
 	
 	self assert: marsRover position equals: 1@3.
-	self assert: marsRover heading equals: NorthHeading new.
+	self assert: marsRover heading equals: HeadingNorth new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:27:16'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:15'!
 test05GoingForwardWhileHeadingEast
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: EastHeading  new.
+	marsRover := MarsRover at: 1@1 heading: HeadingEast  new.
 	
 	marsRover sendCommand: 'f'.
 	
 	self assert: marsRover position equals: 2@1.
-	self assert: marsRover heading equals: EastHeading new.
+	self assert: marsRover heading equals: HeadingEast new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:27:38'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:38:24'!
 test06GoingForwardWhileHeadingWest
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: WestHeading  new.
+	marsRover := MarsRover at: 1@1 heading: HeadingWest  new.
 	
 	marsRover sendCommand: 'f'.
 	
 	self assert: marsRover position equals:0@1.
-	self assert: marsRover heading equals: WestHeading new.
+	self assert: marsRover heading equals: HeadingWest new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:27:59'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:38:24'!
 test07GoingBackwards
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: WestHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingWest new.
 	
 	marsRover sendCommand: 'b'.
 	
 	self assert: marsRover position equals: 2@1.
-	self assert: marsRover heading equals: WestHeading new.
+	self assert: marsRover heading equals: HeadingWest new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:28:43'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:38:24'!
 test08TurningLeftWhileHeadingNorth
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: NorthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingNorth new.
 	
 	marsRover sendCommand: 'l'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: WestHeading new.
+	self assert: marsRover heading equals: HeadingWest new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:29:01'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:38:24'!
 test09TurningLeftWhileHeadingWest
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: WestHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingWest new.
 	
 	marsRover sendCommand: 'l'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: SouthHeading new.
+	self assert: marsRover heading equals: HeadingSouth new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:29:34'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:57'!
 test10TurningLeftWhileHeadingSouth
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: SouthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingSouth new.
 	
 	marsRover sendCommand: 'l'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: EastHeading new.
+	self assert: marsRover heading equals: HeadingEast new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:30:00'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:41'!
 test11TurningLeftWhileHeadingEast
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: EastHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingEast new.
 	
 	marsRover sendCommand: 'l'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: NorthHeading  new.
+	self assert: marsRover heading equals: HeadingNorth  new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:30:23'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:41'!
 test12TurningRightWhileHeadingNorth
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: NorthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingNorth new.
 	
 	marsRover sendCommand: 'r'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: EastHeading new.
+	self assert: marsRover heading equals: HeadingEast new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:30:41'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:37:57'!
 test13TurningRightWhileHeadingEast
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: EastHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingEast new.
 	
 	marsRover sendCommand: 'r'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: SouthHeading new.
+	self assert: marsRover heading equals: HeadingSouth new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:31:04'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:38:24'!
 test14TurningRightWhileHeadingSouth
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: SouthHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingSouth new.
 	
 	marsRover sendCommand: 'r'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: WestHeading new.
+	self assert: marsRover heading equals: HeadingWest new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:31:26'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:38:24'!
 test15TurningRighWhileHeadingWest
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: WestHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingWest new.
 	
 	marsRover sendCommand: 'r'.
 	
 	self assert: marsRover position equals: 1@1.
-	self assert: marsRover heading equals: NorthHeading new.
+	self assert: marsRover heading equals: HeadingNorth new.
 	
 	
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/12/2019 11:31:51'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'dhs 5/13/2019 06:38:24'!
 test16SendingUnknownCommand
 	| marsRover |
-	marsRover := MarsRover at: 1@1 heading: WestHeading new.
+	marsRover := MarsRover at: 1@1 heading: HeadingWest new.
 	
 	self should: [
 		marsRover sendCommand: 'xf'
@@ -211,7 +211,7 @@ test16SendingUnknownCommand
 	raise: Error - MessageNotUnderstood
 	withExceptionDo: [ :exception |
 		self assert: marsRover position equals: 1@1.
-		self assert: marsRover heading equals: WestHeading new.  
+		self assert: marsRover heading equals: HeadingWest new.  
 	]
 	description: MarsRover unknownCommand.
 	
@@ -353,92 +353,92 @@ new
 	^uniqueInstance! !
 
 
-!classDefinition: #EastHeading category: #MarsRover!
-MarsRoverHeading subclass: #EastHeading
+!classDefinition: #HeadingEast category: #MarsRover!
+MarsRoverHeading subclass: #HeadingEast
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!EastHeading methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:55:22'!
+!HeadingEast methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:55:22'!
 forwardDirection
 	^ 1@0
 ! !
 
 
-!EastHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:09:43'!
+!HeadingEast methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:37:41'!
 turnLeft
-	^NorthHeading new! !
+	^HeadingNorth new! !
 
-!EastHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:09:53'!
+!HeadingEast methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:37:57'!
 turnRight
-	^SouthHeading new! !
+	^HeadingSouth new! !
 
 
-!classDefinition: #NorthHeading category: #MarsRover!
-MarsRoverHeading subclass: #NorthHeading
+!classDefinition: #HeadingNorth category: #MarsRover!
+MarsRoverHeading subclass: #HeadingNorth
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!NorthHeading methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:56:34'!
+!HeadingNorth methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:56:34'!
 forwardDirection
 	^ 0@1
 ! !
 
 
-!NorthHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:15:44'!
+!HeadingNorth methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:38:24'!
 turnLeft
-	^WestHeading new! !
+	^HeadingWest new! !
 
-!NorthHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:15:56'!
+!HeadingNorth methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:37:15'!
 turnRight
-	^EastHeading new! !
+	^HeadingEast new! !
 
 
-!classDefinition: #SouthHeading category: #MarsRover!
-MarsRoverHeading subclass: #SouthHeading
+!classDefinition: #HeadingSouth category: #MarsRover!
+MarsRoverHeading subclass: #HeadingSouth
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!SouthHeading methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:57:19'!
+!HeadingSouth methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:57:19'!
 forwardDirection
 	^ 0@-1
 ! !
 
 
-!SouthHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:13:49'!
+!HeadingSouth methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:37:15'!
 turnLeft
-	^EastHeading new! !
+	^HeadingEast new! !
 
-!SouthHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:14:03'!
+!HeadingSouth methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:38:24'!
 turnRight
-	^WestHeading new! !
+	^HeadingWest new! !
 
 
-!classDefinition: #WestHeading category: #MarsRover!
-MarsRoverHeading subclass: #WestHeading
+!classDefinition: #HeadingWest category: #MarsRover!
+MarsRoverHeading subclass: #HeadingWest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!WestHeading methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:58:16'!
+!HeadingWest methodsFor: 'moving' stamp: 'dhs 5/12/2019 11:58:16'!
 forwardDirection
 	^ -1@0
 ! !
 
 
-!WestHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:14:48'!
+!HeadingWest methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:37:57'!
 turnLeft
-	^SouthHeading  new! !
+	^HeadingSouth  new! !
 
-!WestHeading methodsFor: 'turning' stamp: 'dhs 5/12/2019 12:14:59'!
+!HeadingWest methodsFor: 'turning' stamp: 'dhs 5/13/2019 06:37:41'!
 turnRight
-	^NorthHeading  new! !
+	^HeadingNorth  new! !
 
 
 !classDefinition: #MarsRoverMove category: #MarsRover!
