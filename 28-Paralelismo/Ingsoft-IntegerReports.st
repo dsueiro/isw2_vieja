@@ -155,25 +155,16 @@ IntegerReport subclass: #CombinedIntegerPropertiesReport
 	poolDictionaries: ''
 	category: 'Ingsoft-IntegerReports'!
 
-!CombinedIntegerPropertiesReport methodsFor: 'reporting' stamp: 'dhs 5/19/2019 21:00:16'!
+!CombinedIntegerPropertiesReport methodsFor: 'reporting' stamp: 'dhs 5/20/2019 00:28:34'!
 value
 
-	| basicPropertiesLines complexPropertiesLines lines semaphore|
+	| reportBuilder|
 	
-	lines := OrderedCollection new.
-	
-	semaphore := Semaphore new.
-	[basicPropertiesLines := (BasicIntegerPropertiesReport for: integerToAnalize) value. semaphore signal] fork.
-	[complexPropertiesLines := (ComplexIntegerPropertiesReport for: integerToAnalize) value. semaphore signal] fork.
+	reportBuilder := ReportBuilder new.
+	reportBuilder add:  (BasicIntegerPropertiesReport for: integerToAnalize).
+	reportBuilder add: (ComplexIntegerPropertiesReport for: integerToAnalize).
 
-	semaphore wait.
-	semaphore wait.
-
-	lines 
-		addAll: basicPropertiesLines;
-		addAll: complexPropertiesLines.
-		
-	^lines! !
+	^reportBuilder value.! !
 
 
 !classDefinition: #CompleteIntegerReport category: #'Ingsoft-IntegerReports'!
@@ -183,26 +174,16 @@ IntegerReport subclass: #CompleteIntegerReport
 	poolDictionaries: ''
 	category: 'Ingsoft-IntegerReports'!
 
-!CompleteIntegerReport methodsFor: 'reporting' stamp: 'dhs 5/19/2019 21:04:54'!
+!CompleteIntegerReport methodsFor: 'reporting' stamp: 'dhs 5/20/2019 00:28:52'!
 value
 
-	| combinedPropertiesLines differentBasesLines lines semaphore|
+	|reportBuilder|
 	
-	lines := OrderedCollection new.	
-	
-	semaphore := Semaphore new.
+	reportBuilder := ReportBuilder new.
+	reportBuilder add:  (CombinedIntegerPropertiesReport for: integerToAnalize).
+	reportBuilder add: (IntegerOnDifferentBasesReport for: integerToAnalize).
 
-	[combinedPropertiesLines := (CombinedIntegerPropertiesReport for: integerToAnalize) value. semaphore signal] fork.
-	[differentBasesLines := (IntegerOnDifferentBasesReport for: integerToAnalize) value. semaphore signal] fork.
-	
-	semaphore wait.
-	semaphore wait.
-		
-	lines
-		addAll: combinedPropertiesLines;
-		addAll: differentBasesLines.
-		
-	^lines! !
+	^reportBuilder value! !
 
 
 !classDefinition: #IntegerOnDifferentBasesReport category: #'Ingsoft-IntegerReports'!
@@ -289,5 +270,39 @@ value
 		addLineTo: lines title: 'Prime?' with: [ integerToAnalize isPrime ];
 		addLineTo: lines title: 'Next Prime' with: [ integerToAnalize nextPrime ];
 		addLineTo: lines title: 'Sqrt' with: [ integerToAnalize sqrt ].
+		
+	^lines! !
+
+
+!classDefinition: #ReportBuilder category: #'Ingsoft-IntegerReports'!
+Object subclass: #ReportBuilder
+	instanceVariableNames: 'reports'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ingsoft-IntegerReports'!
+
+!ReportBuilder methodsFor: 'initialization' stamp: 'dhs 5/19/2019 23:57:25'!
+add: aReport
+	reports add:  aReport! !
+
+!ReportBuilder methodsFor: 'initialization' stamp: 'dhs 5/20/2019 00:10:56'!
+initialize
+	reports := OrderedCollection new! !
+
+
+!ReportBuilder methodsFor: 'reporting' stamp: 'dhs 5/20/2019 00:24:52'!
+value
+	|lines semaphore results|
+	
+	lines := OrderedCollection new.
+	results := Dictionary new.
+	
+	semaphore := Semaphore new.
+	
+	reports do: [ :aReport | [results at: aReport put: (aReport value). semaphore signal] fork.].
+
+	reports size timesRepeat: [semaphore wait].
+
+	reports do: [ :aReport | lines addAll: (results at: aReport)].
 		
 	^lines! !
