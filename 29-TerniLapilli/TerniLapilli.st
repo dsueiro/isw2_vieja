@@ -615,22 +615,6 @@ ensure: aStartingPoint isNextTo: anEndingPoint
 	^ (self validSlidingDirections includes: anEndingPoint - aStartingPoint)
 		ifFalse: [self error: self class errorInvalidDirection]! !
 
-!TerniLapilli methodsFor: 'validations' stamp: 'DHS 5/27/2019 11:15:43'!
-ensureCanPut
-	(tokens size = 6) ifTrue: [self error: (self class errorCannotPutMoreTokens)].
-	self ensureIsNotWon.
-! !
-
-!TerniLapilli methodsFor: 'validations' stamp: 'DHS 5/27/2019 11:18:13'!
-ensureCanSlide
-	tokens size < 6 ifTrue: [self error: self class errorCannotSlideYet .].
-	self ensureIsNotWon.
-! !
-
-!TerniLapilli methodsFor: 'validations' stamp: 'DHS 5/27/2019 10:34:43'!
-ensureIsNotWon
-	self isWon ifTrue: [ self error: self class errorAlreadyWon ]! !
-
 !TerniLapilli methodsFor: 'validations' stamp: 'DHS 5/26/2019 15:29:23'!
 ensureValidCoordinate: aCoordinate withError: anErrorMessage
 	(self isValidCoordinate: aCoordinate)
@@ -764,11 +748,11 @@ put: aToken at: aPoint
 	self setState
 ! !
 
-!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:33:06'!
+!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 13:46:02'!
 slide: aStartingPosition to: anEndingPosition
 	|tokenToMove|
 	
-	self ensureCanSlide.
+	state ensureCanSlide.
 	
 	(tokens includesKey: anEndingPosition) ifTrue: [self error: self class errorEndPositionIsTaken].
 	
@@ -778,6 +762,7 @@ slide: aStartingPosition to: anEndingPosition
 	tokenToMove := tokens removeKey: aStartingPosition ifAbsent: [self error: self class errorStartPositionIsEmpty].
 	
 	self ensureValidTurnFor: tokenToMove.
+	
 	tokens at: anEndingPosition put: tokenToMove.
 	
 	self setNextPlayer: tokenToMove.
@@ -888,6 +873,10 @@ Object subclass: #TerniLapilliState
 ensureCanPut
 	self subclassResponsibility ! !
 
+!TerniLapilliState methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:44:15'!
+ensureCanSlide
+	self subclassResponsibility ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TerniLapilliState class' category: #TerniLapilli!
@@ -917,6 +906,10 @@ TerniLapilliState subclass: #TerniLapilliPutting
 ensureCanPut
 	^self! !
 
+!TerniLapilliPutting methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:46:47'!
+ensureCanSlide
+	^self error: TerniLapilli errorCannotSlideYet ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TerniLapilliPutting class' category: #TerniLapilli!
@@ -939,6 +932,10 @@ TerniLapilliState subclass: #TerniLapilliSliding
 ensureCanPut
 	self error: (TerniLapilli errorCannotPutMoreTokens)! !
 
+!TerniLapilliSliding methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:44:25'!
+ensureCanSlide
+	^self! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TerniLapilliSliding class' category: #TerniLapilli!
@@ -959,6 +956,10 @@ TerniLapilliState subclass: #TerniLapilliWon
 
 !TerniLapilliWon methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:42:40'!
 ensureCanPut
+	self error: TerniLapilli errorAlreadyWon! !
+
+!TerniLapilliWon methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:44:35'!
+ensureCanSlide
 	self error: TerniLapilli errorAlreadyWon! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
