@@ -585,29 +585,27 @@ test37CannotPutPieceAfterIsWon
 	
 	! !
 
-!TerniLapilliTest methodsFor: 'tests' stamp: 'DHS 5/27/2019 10:50:46'!
+!TerniLapilliTest methodsFor: 'tests' stamp: 'DHS 5/27/2019 12:16:04'!
 test38CannotSlidePieceAfterIsWon
-	|game| 
-	game := TerniLapilli new.
-	
-	game put: #x at: 1@1.
-	game put: #o at: 3@1.
-	game put: #x at: 1@2.
-	game put: #o at: 3@2.
-	game put: #x at: 2@3.
-	game put: #o at: 3@3.
+        |game|
+        game := TerniLapilli new.
 
-	self 
-		should: [ game slide: 2@3 to: 1@3 ]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError | self assert: anError messageText equals: (TerniLapilli errorAlreadyWon) ].
-	
-	! !
+        game put: #x at: 1@1.
+        game put: #o at: 3@1.
+        game put: #x at: 1@2.
+        game put: #o at: 3@2.
+        game put: #x at: 2@3.
+        game put: #o at: 3@3.
+
+        self
+                should: [ game slide: 2@3 to: 1@3 ]
+                raise: Error - MessageNotUnderstood
+                withExceptionDo: [ :anError | self assert: anError messageText equals: (TerniLapilli errorAlreadyWon) ].! !
 
 
 !classDefinition: #TerniLapilli category: #TerniLapilli!
 Object subclass: #TerniLapilli
-	instanceVariableNames: 'tokens nextPlayer'
+	instanceVariableNames: 'tokens nextPlayer state'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
@@ -752,20 +750,21 @@ validSlidingDirections
 	^validDirections! !
 
 
-!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:17:35'!
+!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 13:39:26'!
 put: aToken at: aPoint 
 	self ensureValidTurnFor: aToken.
 	
 	self validatePutPosition: aPoint.
 	
-	self ensureCanPut.
+	state ensureCanPut.
 	
 	tokens at: aPoint put: aToken.
 	
 	self setNextPlayer: aToken.
+	self setState
 ! !
 
-!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:18:31'!
+!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:33:06'!
 slide: aStartingPosition to: anEndingPosition
 	|tokenToMove|
 	
@@ -781,7 +780,8 @@ slide: aStartingPosition to: anEndingPosition
 	self ensureValidTurnFor: tokenToMove.
 	tokens at: anEndingPosition put: tokenToMove.
 	
-	self setNextPlayer: tokenToMove 
+	self setNextPlayer: tokenToMove.
+	self setState
 ! !
 
 !TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:17:11'!
@@ -791,11 +791,16 @@ validatePutPosition: aPoint
 ! !
 
 
-!TerniLapilli methodsFor: 'initialization' stamp: 'DHS 5/26/2019 12:10:21'!
+!TerniLapilli methodsFor: 'initialization' stamp: 'DHS 5/27/2019 11:32:39'!
 initialize
 	tokens := Dictionary new.
-	nextPlayer := #x.! !
+	nextPlayer := #x.
+	state := TerniLapilliPutting new! !
 
+
+!TerniLapilli methodsFor: 'board state' stamp: 'DHS 5/27/2019 12:17:09'!
+allPiecesPut
+	^tokens size = 6! !
 
 !TerniLapilli methodsFor: 'board state' stamp: 'DHS 5/26/2019 16:19:57'!
 includes: aToken at: aPoint 
@@ -824,6 +829,11 @@ isValidCoordinate: aCoordinate
 	^aCoordinate  = 1 or: aCoordinate = 2 or: aCoordinate = 3
 ! !
 
+
+!TerniLapilli methodsFor: 'state' stamp: 'DHS 5/27/2019 11:31:46'!
+setState
+	state := TerniLapilliState stateFor: self! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TerniLapilli class' category: #TerniLapilli!
@@ -838,6 +848,18 @@ errorAlreadyWon
 errorCannotPutMoreTokens
 	^'Cannot put more Pieces on the board' ! !
 
+!TerniLapilli class methodsFor: 'error handling' stamp: 'DHS 5/27/2019 08:39:57'!
+errorCannotSlideYet
+	^'Cannot slide yet'! !
+
+!TerniLapilli class methodsFor: 'error handling' stamp: 'DHS 5/27/2019 08:49:14'!
+errorEndPositionIsTaken
+	^'End position is Taken'! !
+
+!TerniLapilli class methodsFor: 'error handling' stamp: 'DHS 5/27/2019 09:22:58'!
+errorInvalidDirection
+	^'Invalid direction'! !
+
 !TerniLapilli class methodsFor: 'error handling' stamp: 'DHS 5/26/2019 15:09:16'!
 errorNotAValidPoint: aPoint 
 	^'Cannot put a piece at ', aPoint asString ! !
@@ -850,19 +872,101 @@ errorNotTurnFor: aToken
 errorPlaceAlreadyTaken
 	^'Place already taken'! !
 
-
-!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:39:57'!
-errorCannotSlideYet
-	^'Cannot slide yet'! !
-
-!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:49:14'!
-errorEndPositionIsTaken
-	^'End position is Taken'! !
-
-!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:22:58'!
-errorInvalidDirection
-	^'Invalid direction'! !
-
-!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:46:00'!
+!TerniLapilli class methodsFor: 'error handling' stamp: 'DHS 5/27/2019 08:46:00'!
 errorStartPositionIsEmpty
 	^'Start position is Empty'! !
+
+
+!classDefinition: #TerniLapilliState category: #TerniLapilli!
+Object subclass: #TerniLapilliState
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!TerniLapilliState methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:38:35'!
+ensureCanPut
+	self subclassResponsibility ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TerniLapilliState class' category: #TerniLapilli!
+TerniLapilliState class
+	instanceVariableNames: ''!
+
+!TerniLapilliState class methodsFor: 'subclass creation' stamp: 'DHS 5/27/2019 13:42:20'!
+stateFor: aGame
+	| subclass |
+	subclass := self allSubclasses detect: [ :aStateClass | aStateClass isCurrentStateFor: aGame ].
+	^subclass new.! !
+
+
+!TerniLapilliState class methodsFor: 'testing' stamp: 'DHS 5/27/2019 11:30:01'!
+isCurrentStateFor: aGame
+	self subclassResponsibility ! !
+
+
+!classDefinition: #TerniLapilliPutting category: #TerniLapilli!
+TerniLapilliState subclass: #TerniLapilliPutting
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!TerniLapilliPutting methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:36:54'!
+ensureCanPut
+	^self! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TerniLapilliPutting class' category: #TerniLapilli!
+TerniLapilliPutting class
+	instanceVariableNames: ''!
+
+!TerniLapilliPutting class methodsFor: 'testing' stamp: 'DHS 5/27/2019 11:30:01'!
+isCurrentStateFor: aGame
+	^aGame isWon not and: aGame allPiecesPut not! !
+
+
+!classDefinition: #TerniLapilliSliding category: #TerniLapilli!
+TerniLapilliState subclass: #TerniLapilliSliding
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!TerniLapilliSliding methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:37:43'!
+ensureCanPut
+	self error: (TerniLapilli errorCannotPutMoreTokens)! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TerniLapilliSliding class' category: #TerniLapilli!
+TerniLapilliSliding class
+	instanceVariableNames: ''!
+
+!TerniLapilliSliding class methodsFor: 'testing' stamp: 'DHS 5/27/2019 11:30:01'!
+isCurrentStateFor: aGame
+	^aGame isWon not and: aGame allPiecesPut! !
+
+
+!classDefinition: #TerniLapilliWon category: #TerniLapilli!
+TerniLapilliState subclass: #TerniLapilliWon
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TerniLapilli'!
+
+!TerniLapilliWon methodsFor: 'validations' stamp: 'DHS 5/27/2019 13:42:40'!
+ensureCanPut
+	self error: TerniLapilli errorAlreadyWon! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TerniLapilliWon class' category: #TerniLapilli!
+TerniLapilliWon class
+	instanceVariableNames: ''!
+
+!TerniLapilliWon class methodsFor: 'testing' stamp: 'DHS 5/27/2019 11:30:01'!
+isCurrentStateFor: aGame
+	^aGame isWon! !
