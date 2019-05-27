@@ -617,6 +617,18 @@ ensure: aStartingPoint isNextTo: anEndingPoint
 	^ (self validSlidingDirections includes: anEndingPoint - aStartingPoint)
 		ifFalse: [self error: self class errorInvalidDirection]! !
 
+!TerniLapilli methodsFor: 'validations' stamp: 'DHS 5/27/2019 11:15:43'!
+ensureCanPut
+	(tokens size = 6) ifTrue: [self error: (self class errorCannotPutMoreTokens)].
+	self ensureIsNotWon.
+! !
+
+!TerniLapilli methodsFor: 'validations' stamp: 'DHS 5/27/2019 11:18:13'!
+ensureCanSlide
+	tokens size < 6 ifTrue: [self error: self class errorCannotSlideYet .].
+	self ensureIsNotWon.
+! !
+
 !TerniLapilli methodsFor: 'validations' stamp: 'DHS 5/27/2019 10:34:43'!
 ensureIsNotWon
 	self isWon ifTrue: [ self error: self class errorAlreadyWon ]! !
@@ -740,28 +752,24 @@ validSlidingDirections
 	^validDirections! !
 
 
-!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 10:50:26'!
+!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:17:35'!
 put: aToken at: aPoint 
 	self ensureValidTurnFor: aToken.
 	
-	(tokens includesKey: aPoint) ifTrue: [self error: (self class errorPlaceAlreadyTaken)].
+	self validatePutPosition: aPoint.
 	
-	(tokens size = 6) ifTrue: [self error: (self class errorCannotPutMoreTokens)].
-	self ensureIsNotWon.
-	
-	self ensureValidPosition: aPoint.
+	self ensureCanPut.
 	
 	tokens at: aPoint put: aToken.
 	
 	self setNextPlayer: aToken.
 ! !
 
-!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 10:52:14'!
+!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:18:31'!
 slide: aStartingPosition to: anEndingPosition
 	|tokenToMove|
 	
-	tokens size < 6 ifTrue: [self error: self class errorCannotSlideYet .].
-	self ensureIsNotWon.
+	self ensureCanSlide.
 	
 	(tokens includesKey: anEndingPosition) ifTrue: [self error: self class errorEndPositionIsTaken].
 	
@@ -774,6 +782,12 @@ slide: aStartingPosition to: anEndingPosition
 	tokens at: anEndingPosition put: tokenToMove.
 	
 	self setNextPlayer: tokenToMove 
+! !
+
+!TerniLapilli methodsFor: 'playing' stamp: 'DHS 5/27/2019 11:17:11'!
+validatePutPosition: aPoint
+	(tokens includesKey: aPoint) ifTrue: [self error: (self class errorPlaceAlreadyTaken)].	
+	self ensureValidPosition: aPoint.
 ! !
 
 
@@ -795,27 +809,6 @@ isEmptyAt: aPoint
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 10:15:05'!
 setNextPlayer: aToken
-	aToken = #x 
-		ifTrue: [ 
-			nextPlayer := #o.
-		]
-		ifFalse: [
-			nextPlayer := #x
-		].! !
-
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 10:48:43'!
-xx: aPoint xx: aToken 
-	aToken = nextPlayer ifFalse: [ self error: (self class errorNotTurnFor: aToken)].
-	
-	(tokens includesKey: aPoint) ifTrue: [self error: (self class errorPlaceAlreadyTaken)].
-	
-	(tokens size = 6) ifTrue: [self error: (self class errorCannotPutMoreTokens)].
-	self ensureNotWon.
-	
-	self ensureValidPosition: aPoint.
-	
-	tokens xx: aPoint xx: aToken.
-	
 	aToken = #x 
 		ifTrue: [ 
 			nextPlayer := #o.
