@@ -337,6 +337,205 @@ test23CanSlideToken
 	self deny: game isWon.	
 ! !
 
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:37:53'!
+test24CannotSlideYet
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 1@3.
+	
+	self 
+		should: [ game slide: 3@1 to: 3@2. ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText equals: (TerniLapilli errorCannotSlideYet).
+			self assert: (game isEmptyAt: 3@2).
+			].
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:44:42'!
+test25CannotSlideFromEmptyPosition
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 1@3.
+	game put: #o at: 1@2.
+	
+	self 
+		should: [ game slide: 3@2 to: 3@3. ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText equals: (TerniLapilli errorStartPositionIsEmpty).
+			].
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:15:05'!
+test26CannotSlideToTakenPosition
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 1@3.
+	game put: #o at: 1@2.
+	
+	self 
+		should: [ game slide: 2@2 to: 2@1. ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText equals: (TerniLapilli errorEndPositionIsTaken).
+			].
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:15:14'!
+test27CannotSlideIfNotItsTurn
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 1@3.
+	game put: #o at: 1@2.
+	
+	self 
+		should: [ game slide: 3@1 to: 3@2. ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText equals: (TerniLapilli errorNotTurnFor: #o).
+			].
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:15:22'!
+test28CannotSlideXAfterO
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 1@3.
+	game put: #o at: 1@2.
+
+	game slide: 2@2 to: 2@3.	
+	game slide: 3@1 to: 3@2.	
+	game slide: 2@3 to: 2@2.	
+
+	self deny: game isWon! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:24:07'!
+test29CannotMoveTwoPlacesToTheLeft
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 3@2.
+	game put: #o at: 3@3.
+
+	self 
+		should: [ game slide: 1@1 to: 1@3. ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError | 
+			self assert: anError messageText equals: (TerniLapilli errorInvalidDirection).
+			self assert: (game isEmptyAt: 1@3).
+			].
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:38:47'!
+test30CanMoveLeftDownwards
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 1@2.
+	game put: #o at: 1@3.
+	game put: #x at: 2@2.
+	game put: #o at: 3@2.
+
+	game slide: 2@2 to: 3@1.
+	
+	self deny: game isWon.! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:39:52'!
+test31CanMoveRightDownwards
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 1@2.
+	game put: #o at: 1@3.
+	game put: #x at: 2@2.
+	game put: #o at: 3@2.
+
+	game slide: 2@2 to: 3@3.
+	
+	self deny: game isWon.! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:45:07'!
+test32CanMoveRightUpwards
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 1@2.
+	game put: #o at: 3@2.
+	game put: #x at: 2@2.
+	game put: #o at: 2@3.
+
+	game slide: 2@2 to: 1@3.
+	
+	self assert: game isWon.! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:46:57'!
+test33CanMoveUpwards
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 2@1.
+	game put: #o at: 3@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@2.
+	game put: #x at: 1@3.
+	game put: #o at: 2@3.
+
+	game slide: 2@2 to: 1@2.
+	
+	self deny: game isWon.! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:47:53'!
+test34CanMoveLeftUpwards
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 2@1.
+	game put: #o at: 3@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@2.
+	game put: #x at: 1@3.
+	game put: #o at: 2@3.
+
+	game slide: 2@2 to: 1@1.
+	
+	self deny: game isWon.! !
+
 
 !classDefinition: #TerniLapilli category: #TerniLapilli!
 Object subclass: #TerniLapilli
@@ -373,6 +572,16 @@ at: aPoint put: aToken
 descendingDiagonalPositions
 	^ Array with: 1@1 with: 2@2 with: 3@3! !
 
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:30:56'!
+ensure: aStartingPoint isNextTo: anEndingPoint 
+	^ (self validSlidingDirections includes: anEndingPoint - aStartingPoint)
+		ifFalse: [self error: self class errorInvalidDirection]! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:51:46'!
+ensureValidTurnFor: aToken
+	aToken = nextPlayer ifFalse: [ self error: (self class errorNotTurnFor: aToken)].
+! !
+
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:03:21'!
 firstColumnPositions
 	^ Array with: 1@1 with: 2@1 with: 3@1! !
@@ -401,6 +610,10 @@ initialize
 	tokens := Dictionary new.
 	nextPlayer := #x.! !
 
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:41:33'!
+isEmptyAt: aPoint 
+	^ (tokens includesKey: aPoint) not! !
+
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/26/2019 16:23:35'!
 isWon
 	^ self xHasWon or: self oHasWon! !
@@ -409,9 +622,9 @@ isWon
 oHasWon
 	^ self hasWon: #o! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/26/2019 15:20:42'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:03:48'!
 put: aToken at: aPoint 
-	aToken = nextPlayer ifFalse: [ self error: (self class errorNotTurnFor: aToken)].
+	self ensureValidTurnFor: aToken.
 	
 	(tokens includesKey: aPoint) ifTrue: [self error: (self class errorPlaceAlreadyTaken)].
 	
@@ -421,13 +634,8 @@ put: aToken at: aPoint
 	
 	tokens at: aPoint put: aToken.
 	
-	aToken = #x 
-		ifTrue: [ 
-			nextPlayer := #o.
-		]
-		ifFalse: [
-			nextPlayer := #x
-		].! !
+	self setNextToken: aToken.
+! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:04:56'!
 secondColumnPositions
@@ -437,11 +645,30 @@ secondColumnPositions
 secondRowPositions
 	^ Array with: 2@1 with: 2@2 with: 2@3! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:30:26'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:03:23'!
+setNextToken: aToken
+	aToken = #x 
+		ifTrue: [ 
+			nextPlayer := #o.
+		]
+		ifFalse: [
+			nextPlayer := #x
+		].! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:18:15'!
 slide: aStartingPosition to: anEndingPosition
 	|tokenToMove|
-	tokenToMove := tokens removeKey: aStartingPosition.
-	tokens at: tokenToMove put: anEndingPosition.
+	
+	tokens size < 6 ifTrue: [self error: self class errorCannotSlideYet .].
+	(tokens includesKey: anEndingPosition) ifTrue: [self error: self class errorEndPositionIsTaken].
+	
+	self ensure: aStartingPosition isNextTo: anEndingPosition.
+	tokenToMove := tokens removeKey: aStartingPosition ifAbsent: [self error: self class errorStartPositionIsEmpty].
+	
+	self ensureValidTurnFor: tokenToMove.
+	tokens at: anEndingPosition put: tokenToMove.
+	
+	self setNextToken: tokenToMove 
 ! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:07:44'!
@@ -451,6 +678,23 @@ thirdColumnPositions
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:50:57'!
 thirdRowPositions
 	^ Array with: 3@1 with: 3@2 with: 3@3! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:48:17'!
+validSlidingDirections
+	|validDirections|
+	validDirections := OrderedCollection new.
+	validDirections add: 1@0.
+	validDirections add: -1@0.
+	
+	validDirections add: 0@1.
+	validDirections add: 0@-1.
+	
+	validDirections add: 1@-1.
+	validDirections add: 1@1.
+	validDirections add: -1@1.
+	validDirections add: -1@-1.
+
+	^validDirections! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:13:37'!
 winningPositions
@@ -523,3 +767,20 @@ errorNotTurnFor: aToken
 !TerniLapilli class methodsFor: 'error handling' stamp: 'DHS 5/26/2019 13:43:41'!
 errorPlaceAlreadyTaken
 	^'Place already taken'! !
+
+
+!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:39:57'!
+errorCannotSlideYet
+	^'Cannot slide yet'! !
+
+!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:49:14'!
+errorEndPositionIsTaken
+	^'End position is Taken'! !
+
+!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 09:22:58'!
+errorInvalidDirection
+	^'Invalid direction'! !
+
+!TerniLapilli class methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:46:00'!
+errorStartPositionIsEmpty
+	^'Start position is Empty'! !
