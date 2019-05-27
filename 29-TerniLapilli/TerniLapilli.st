@@ -306,6 +306,36 @@ test21CanRecognizeWonGameInAscendingDiagonal
 	self assert: game isWon.	
 ! !
 
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:36:15'!
+test22CanRecognizeWonGameInDescendingDiagonal
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 1@3.
+
+	self deny: game isWon.	
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:36:10'!
+test23CanSlideToken
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 1@3.
+	
+	game slide: 1@3 to: 2@3.
+
+	self deny: game isWon.	
+! !
+
 
 !classDefinition: #TerniLapilli category: #TerniLapilli!
 Object subclass: #TerniLapilli
@@ -317,6 +347,26 @@ Object subclass: #TerniLapilli
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:13:20'!
 ascendingDiagonalPositions
 	^ Array with: 1@3 with: 2@2 with: 3@1! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:30:26'!
+at: aPoint put: aToken 
+	aToken = nextPlayer ifFalse: [ self error: (self class errorNotTurnFor: aToken)].
+	
+	(tokens includesKey: aPoint) ifTrue: [self error: (self class errorPlaceAlreadyTaken)].
+	
+	(tokens size = 6) ifTrue: [self error: (self class errorCannotPutMoreTokens)].
+	
+	self ensureValidPosition: aPoint.
+	
+	tokens at: aPoint put: aToken.
+	
+	aToken = #x 
+		ifTrue: [ 
+			nextPlayer := #o.
+		]
+		ifFalse: [
+			nextPlayer := #x
+		].! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:11:46'!
 descendingDiagonalPositions
@@ -385,6 +435,13 @@ secondColumnPositions
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:49:59'!
 secondRowPositions
 	^ Array with: 2@1 with: 2@2 with: 2@3! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:30:26'!
+slide: aStartingPosition to: anEndingPosition
+	|tokenToMove|
+	tokenToMove := tokens removeKey: aStartingPosition.
+	tokens at: tokenToMove put: anEndingPosition.
+! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:07:44'!
 thirdColumnPositions
