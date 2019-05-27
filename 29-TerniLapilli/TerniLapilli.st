@@ -235,6 +235,77 @@ test16CanRecognizeWonGameInThirdRow
 	self assert: game isWon.	
 ! !
 
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:02:16'!
+test17CanRecognizeWonGameInFirstColumn
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@2.
+	game put: #x at: 2@1.
+	game put: #o at: 2@3.
+	game put: #x at: 3@1.
+
+	self assert: game isWon.	
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:04:32'!
+test18CanRecognizeWonGameInSecondColumn
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 1@2.
+	game put: #x at: 2@1.
+	game put: #o at: 2@2.
+	game put: #x at: 3@3.
+	game put: #o at: 3@2.
+
+	self assert: game isWon.	
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:06:23'!
+test19CanRecognizeWonGameInThirdColumn
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@3.
+	game put: #o at: 1@2.
+	game put: #x at: 2@3.
+	game put: #o at: 2@2.
+	game put: #x at: 3@3.
+
+	self assert: game isWon.	
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:10:32'!
+test20CanRecognizeWonGameInDescendingDiagonal
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@1.
+	game put: #o at: 2@1.
+	game put: #x at: 2@2.
+	game put: #o at: 3@1.
+	game put: #x at: 3@3.
+
+	self assert: game isWon.	
+! !
+
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:13:00'!
+test21CanRecognizeWonGameInAscendingDiagonal
+	|game| 
+	game := TerniLapilli new.
+	
+	game put: #x at: 1@3.
+	game put: #o at: 2@3.
+	game put: #x at: 2@2.
+	game put: #o at: 3@3.
+	game put: #x at: 3@1.
+
+	self assert: game isWon.	
+! !
+
 
 !classDefinition: #TerniLapilli category: #TerniLapilli!
 Object subclass: #TerniLapilli
@@ -243,31 +314,31 @@ Object subclass: #TerniLapilli
 	poolDictionaries: ''
 	category: 'TerniLapilli'!
 
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:13:20'!
+ascendingDiagonalPositions
+	^ Array with: 1@3 with: 2@2 with: 3@1! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:11:46'!
+descendingDiagonalPositions
+	^ Array with: 1@1 with: 2@2 with: 3@3! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:03:21'!
+firstColumnPositions
+	^ Array with: 1@1 with: 2@1 with: 3@1! !
+
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:46:08'!
 firstRowPositions
 	^ Array with: 1@1 with: 1@2 with: 1@3! !
 
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:38:12'!
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:59:14'!
 hasWon: aToken
-	^ (self hasWonFirstRow: aToken) or:
-		(self hasWonSecondRow: aToken) or: 
-		(self hasWonThirdRow: aToken)! !
+	^self winningPositions anySatisfy:  
+		[ :positions | self hasWon: aToken withPositions: positions] .
+! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:47:55'!
 hasWon: aToken withPositions: winningPositions
 	^winningPositions allSatisfy: [ :aPosition | self includes: aToken at: aPosition].! !
-
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:48:57'!
-hasWonFirstRow: aToken
-	^self hasWon: aToken withPositions: self firstRowPositions.! !
-
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:50:24'!
-hasWonSecondRow: aToken
-	^self hasWon: aToken withPositions: self secondRowPositions.! !
-
-!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:51:34'!
-hasWonThirdRow: aToken
-	^self hasWon: aToken withPositions: self thirdRowPositions.! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/26/2019 16:19:57'!
 includes: aToken at: aPoint 
@@ -307,13 +378,39 @@ put: aToken at: aPoint
 			nextPlayer := #x
 		].! !
 
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:04:56'!
+secondColumnPositions
+	^ Array with: 1@2 with: 2@2 with: 3@2! !
+
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:49:59'!
 secondRowPositions
 	^ Array with: 2@1 with: 2@2 with: 2@3! !
 
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:07:44'!
+thirdColumnPositions
+	^ Array with: 1@3 with: 2@3 with: 3@3! !
+
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 05:50:57'!
 thirdRowPositions
 	^ Array with: 3@1 with: 3@2 with: 3@3! !
+
+!TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:13:37'!
+winningPositions
+	|positions|
+	positions := OrderedCollection new.
+	
+	positions add: self firstRowPositions .
+	positions add: self secondRowPositions .
+	positions add: self thirdRowPositions .
+
+	positions add: self firstColumnPositions .
+	positions add: self secondColumnPositions .
+	positions add: self thirdColumnPositions .
+
+	positions add: self descendingDiagonalPositions .
+	positions add: self ascendingDiagonalPositions .
+	
+	^positions! !
 
 !TerniLapilli methodsFor: 'as yet unclassified' stamp: 'DHS 5/26/2019 16:27:27'!
 xHasWon
