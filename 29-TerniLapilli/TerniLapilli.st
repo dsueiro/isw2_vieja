@@ -320,7 +320,7 @@ test22CanRecognizeWonGameInDescendingDiagonal
 	self deny: game isWon.	
 ! !
 
-!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 06:36:10'!
+!TerniLapilliTest methodsFor: 'as yet unclassified' stamp: 'DHS 5/27/2019 08:34:10'!
 test23CanSlideToken
 	|game| 
 	game := TerniLapilli new.
@@ -330,6 +330,7 @@ test23CanSlideToken
 	game put: #x at: 2@2.
 	game put: #o at: 3@1.
 	game put: #x at: 1@3.
+	game put: #o at: 1@2.
 	
 	game slide: 1@3 to: 2@3.
 
