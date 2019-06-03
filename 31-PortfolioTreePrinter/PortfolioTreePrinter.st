@@ -1,3 +1,83 @@
+!classDefinition: #BonusTrackTest category: #PortfolioTreePrinter!
+TestCase subclass: #BonusTrackTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter'!
+
+!BonusTrackTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:56:21'!
+test01AccountsHaveNames
+	| account |
+	account := ReceptiveAccount named: 'Un nombre'.
+	
+	self assert: account name equals: 'Un nombre'
+	! !
+
+!BonusTrackTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:57:17'!
+test02PortfoliosHaveNames
+	"No se precisaba porque no fallo, pero lo dejamos para documentacion"
+	| account |
+	account := ReceptiveAccount named: 'Un nombre'.
+	
+	self assert: account name equals: 'Un nombre'
+	! !
+
+!BonusTrackTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 02:32:48'!
+test03TreePortfolioReportReportsPortfolioTree
+	| angiesAccount childrenPortfolio expected familyPortfolio johnsAccount myAccount report |
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'.
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount.
+	myAccount := ReceptiveAccount named: 'Cuenta mia'.
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+
+	expected := OrderedCollection  withAll: #(
+		'Portfolio de la familia'
+		'   Cuenta mia'
+		'   Portfolio de hijos'
+		'      Cuenta de Juan'
+		'      Cuenta de Angeles'	
+	).
+	
+	report := TreePortfolioReport for: familyPortfolio.
+	
+	self assert: report show equals: expected. ! !
+
+!BonusTrackTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 02:51:54'!
+test04SpecialAccountSummaryReportsPortfolioTreeWithOperations
+	| angiesAccount childrenPortfolio expected familyPortfolio johnsAccount myAccount report depositForMyAccount withdrawForMyAccount |
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'.
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount.
+	myAccount := ReceptiveAccount named: 'Cuenta mia'.
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+
+	depositForMyAccount := Deposit for: 100.
+	withdrawForMyAccount := Withdraw for: 50.
+	
+	myAccount  register: depositForMyAccount .
+	myAccount  register: withdrawForMyAccount .
+	
+	expected := OrderedCollection  withAll: #(
+		'Portfolio de la familia'
+		'   Cuenta mia'
+		'      Depósito por 100.'
+		'      Extracción por 50.'
+		'      Balance = 50'
+		'   Portfolio de hijos'
+		'      Cuenta de Juan'
+		'         Balance = 0'
+		'      Cuenta de Angeles'	
+		'         Balance = 0'
+		'      Balance = 0'
+		'   Balance = 50'	
+	).
+	
+	report := SpecialAccountSummary for: familyPortfolio.
+	
+	self assert: report show equals: expected. ! !
+
+
 !classDefinition: #PortfolioTest category: #PortfolioTreePrinter!
 TestCase subclass: #PortfolioTest
 	instanceVariableNames: ''
@@ -494,7 +574,7 @@ setUp
 
 !classDefinition: #Account category: #PortfolioTreePrinter!
 Object subclass: #Account
-	instanceVariableNames: ''
+	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter'!
@@ -508,6 +588,12 @@ hasRegistered: aTransaction
 isComposedBy: anAccount
 
 	self subclassResponsibility ! !
+
+!Account methodsFor: 'testing' stamp: 'DHS 6/3/2019 01:55:20'!
+name
+	name ifEmpty: [^super name].
+	
+	^name! !
 
 
 !Account methodsFor: 'balance' stamp: 'HAW 5/25/2019 12:23:40'!
@@ -531,6 +617,25 @@ transactions
 addedTo: aPortfolio
 
 	self subclassResponsibility ! !
+
+
+!Account methodsFor: 'initialization' stamp: 'DHS 6/3/2019 01:55:45'!
+initialize
+	name := '' ! !
+
+!Account methodsFor: 'initialization' stamp: 'DHS 6/3/2019 01:53:00'!
+initializeWith: aName
+	name := aName.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Account class' category: #PortfolioTreePrinter!
+Account class
+	instanceVariableNames: ''!
+
+!Account class methodsFor: 'instance creation' stamp: 'DHS 6/3/2019 02:05:36'!
+named: aName 
+	^self new initializeWith: aName! !
 
 
 !classDefinition: #Portfolio category: #PortfolioTreePrinter!
@@ -604,6 +709,11 @@ transactions
 	^transactions ! !
 
 
+!Portfolio methodsFor: 'composition' stamp: 'DHS 6/3/2019 02:21:02'!
+accounts
+	
+	^accounts ! !
+
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:02:59'!
 addedTo: aPortfolio 
 	
@@ -624,6 +734,12 @@ hasRegistered: aTransaction
 isComposedBy: anAccount
 
 	^ self = anAccount or: [ accounts anySatisfy: [ :composedAccount | (composedAccount isComposedBy: anAccount) or: [ anAccount isComposedBy: composedAccount ]]]! !
+
+
+!Portfolio methodsFor: 'reporting' stamp: 'DHS 6/3/2019 02:21:45'!
+acceptReportVisitor: aReport on: results
+	aReport reportForPortfolio: self on: results.
+! !
 
 
 !Portfolio methodsFor: 'account management - private' stamp: 'HAW 5/25/2019 12:17:31'!
@@ -654,6 +770,21 @@ Portfolio class
 canNotAddAccountErrorMessage
 	
 	^'Can not add repeated account to a portfolio'! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 02:04:08'!
+named: aName with: anAccount
+
+	^(self named: aName) 
+		add: anAccount;
+		yourself! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 02:04:30'!
+named: aName with: anAccount with: anotherAccount
+
+	^(self named: aName) 
+		add: anAccount;
+		add: anotherAccount;
+		yourself! !
 
 !Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
 with: anAccount
@@ -721,6 +852,11 @@ isComposedBy: anAccount
 
 	^self = anAccount ! !
 
+
+!ReceptiveAccount methodsFor: 'composition' stamp: 'DHS 6/3/2019 02:14:48'!
+acceptReportVisitor: aReport on: results
+	aReport reportForReceptiveAccount: self on: results.
+! !
 
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
 addedTo: aPortfolio 
@@ -1071,6 +1207,124 @@ WithdrawForTransfer class
 !WithdrawForTransfer class methodsFor: 'as yet unclassified' stamp: 'DHS 6/2/2019 21:16:40'!
 legOf: aTransfer 
 	^self new initializeLegOf: aTransfer! !
+
+
+!classDefinition: #PortfolioReport category: #PortfolioTreePrinter!
+Object subclass: #PortfolioReport
+	instanceVariableNames: 'portfolio'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter'!
+
+!PortfolioReport methodsFor: 'visitor' stamp: 'DHS 6/3/2019 02:55:10'!
+reportForPortfolio: aReceptiveAccount on: results 
+	self subclassResponsibility ! !
+
+!PortfolioReport methodsFor: 'visitor' stamp: 'DHS 6/3/2019 02:55:00'!
+reportForReceptiveAccount: aReceptiveAccount on: results 
+	self subclassResponsibility ! !
+
+!PortfolioReport methodsFor: 'visitor' stamp: 'DHS 6/3/2019 03:03:12'!
+visitAccounts
+	| lines |
+	lines := OrderedCollection new.
+	
+	portfolio acceptReportVisitor: self on: lines. 
+	
+	^lines! !
+
+
+!PortfolioReport methodsFor: 'reporting' stamp: 'DHS 6/3/2019 03:02:44'!
+show
+	self subclassResponsibility ! !
+
+
+!PortfolioReport methodsFor: 'initialization' stamp: 'DHS 6/3/2019 02:57:11'!
+initializeFor: aPortfolio 
+	portfolio := aPortfolio! !
+
+
+!classDefinition: #SpecialAccountSummary category: #PortfolioTreePrinter!
+PortfolioReport subclass: #SpecialAccountSummary
+	instanceVariableNames: 'portfolio2'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter'!
+
+!SpecialAccountSummary methodsFor: 'reporting' stamp: 'DHS 6/3/2019 03:03:12'!
+show
+	^self visitAccounts! !
+
+
+!SpecialAccountSummary methodsFor: 'visitor' stamp: 'DHS 6/3/2019 02:52:10'!
+reportForPortfolio: aPortfolio on: results 
+	| childrenLines |
+	results add: aPortfolio name.
+	
+	childrenLines := OrderedCollection new.
+	aPortfolio accounts do: [ :account | account acceptReportVisitor: self on: childrenLines ].
+	
+ 	childrenLines do: [:reportLine | results add: '   ', reportLine].
+	results add: '   Balance = ', aPortfolio balance asString .
+
+	! !
+
+!SpecialAccountSummary methodsFor: 'visitor' stamp: 'DHS 6/3/2019 02:44:42'!
+reportForReceptiveAccount: aReceptiveAccount on: results 
+	| summary |
+	results add: aReceptiveAccount name.
+	
+	summary := AccountSummary for: aReceptiveAccount.
+	
+	summary show do: [ :line | results add: '   ', line]! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SpecialAccountSummary class' category: #PortfolioTreePrinter!
+SpecialAccountSummary class
+	instanceVariableNames: ''!
+
+!SpecialAccountSummary class methodsFor: 'instance creation' stamp: 'DHS 6/3/2019 02:36:11'!
+for: aPortfolio 
+	^self new initializeFor: aPortfolio! !
+
+
+!classDefinition: #TreePortfolioReport category: #PortfolioTreePrinter!
+PortfolioReport subclass: #TreePortfolioReport
+	instanceVariableNames: 'portfolio2'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'PortfolioTreePrinter'!
+
+!TreePortfolioReport methodsFor: 'reporting' stamp: 'DHS 6/3/2019 03:03:12'!
+show
+	^self visitAccounts! !
+
+
+!TreePortfolioReport methodsFor: 'visitor' stamp: 'DHS 6/3/2019 02:32:06'!
+reportForPortfolio: aPortfolio on: results 
+	| childrenLines |
+	results add: aPortfolio name.
+	
+	childrenLines := OrderedCollection new.
+	aPortfolio accounts do: [ :account | account acceptReportVisitor: self on: childrenLines ].
+	
+ 	childrenLines do: [:reportLine | results add: '   ', reportLine]! !
+
+!TreePortfolioReport methodsFor: 'visitor' stamp: 'DHS 6/3/2019 02:23:00'!
+reportForReceptiveAccount: aReceptiveAccount on: results 
+	results add: aReceptiveAccount name.
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TreePortfolioReport class' category: #PortfolioTreePrinter!
+TreePortfolioReport class
+	instanceVariableNames: ''!
+
+!TreePortfolioReport class methodsFor: 'instance creation' stamp: 'DHS 6/3/2019 02:07:55'!
+for: aPortfolio 
+	^self new initializeFor: aPortfolio! !
 
 
 !classDefinition: #Transfer category: #PortfolioTreePrinter!
