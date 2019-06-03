@@ -312,7 +312,7 @@ TestCase subclass: #ReportTest
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter'!
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 01:04:55'!
+!ReportTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:04:55'!
 test01AccountSummaryCanReportOnEmptyAccount
 	| account report expected |
 	account := ReceptiveAccount  new.
@@ -323,7 +323,7 @@ test01AccountSummaryCanReportOnEmptyAccount
 	self assert: report show equals: expected
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 01:05:24'!
+!ReportTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:05:24'!
 test02AccountSummaryCanReportDeposits
 	| account report deposit expected portfolio |
 	account := ReceptiveAccount  new.
@@ -339,7 +339,7 @@ test02AccountSummaryCanReportDeposits
 	self assert: report show equals:  expected.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 01:05:50'!
+!ReportTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:05:50'!
 test03AccountSummaryCanReportWithdraws
 	| account report deposit expected portfolio withdraw |
 	account := ReceptiveAccount  new.
@@ -363,7 +363,7 @@ test03AccountSummaryCanReportWithdraws
 	self assert: report show equals:  expected.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 01:06:25'!
+!ReportTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:06:25'!
 test04AccountSummaryCanReportWithdrawForTransfer
 	| account report deposit expected portfolio withdraw anotherAccount |
 	account := ReceptiveAccount  new.
@@ -391,7 +391,7 @@ test04AccountSummaryCanReportWithdrawForTransfer
 	self assert: report show equals:  expected.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 01:06:47'!
+!ReportTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:06:47'!
 test05AccountSummaryCanReportDepositForTransfer
 	| account report deposit expected portfolio withdraw anotherAccount |
 	account := ReceptiveAccount  new.
@@ -421,7 +421,7 @@ test05AccountSummaryCanReportDepositForTransfer
 	self assert: report show equals:  expected.
 	! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/3/2019 01:07:36'!
+!ReportTest methodsFor: 'tests' stamp: 'DHS 6/3/2019 01:07:36'!
 test06NetTransferCanCalculateBalanceFromTransfers
 	| account report deposit portfolio withdraw anotherAccount |
 	account := ReceptiveAccount  new.
@@ -451,28 +451,21 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/2/2019 19:31:34'!
-setUp
-	withdrawAccount := ReceptiveAccount new.
-	depositAccount := ReceptiveAccount new.
-
-	! !
-
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/2/2019 19:31:27'!
+!TransferTest methodsFor: 'tests' stamp: 'DHS 6/2/2019 19:31:27'!
 test01TransferIncreasesBalanceOnTransactionValueToReceivingAccount
 	Transfer from: withdrawAccount to: depositAccount for: 50.	
 		
 	self assert: 50 equals: depositAccount balance .
 	! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/2/2019 19:31:46'!
+!TransferTest methodsFor: 'tests' stamp: 'DHS 6/2/2019 19:31:46'!
 test02TransferIncreasesBalanceOnTransactionValueToReceivingAccount
 	Transfer from: withdrawAccount to: depositAccount for: 50.	
 		
 	self assert: -50 equals: withdrawAccount balance .
 	! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/2/2019 19:31:54'!
+!TransferTest methodsFor: 'tests' stamp: 'DHS 6/2/2019 19:31:54'!
 test03WithdrawAccountTransactionIncludesWithdrawLegOfTransfer
 	| transfer |
 
@@ -481,13 +474,21 @@ test03WithdrawAccountTransactionIncludesWithdrawLegOfTransfer
 	self assert: (withdrawAccount transactions includes: transfer withdrawLeg).
 	! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/2/2019 19:30:42'!
+!TransferTest methodsFor: 'tests' stamp: 'DHS 6/2/2019 19:30:42'!
 test04DepositAccountTransactionIncludesDepositLegOfTransfer
 	| transfer |
 
 	transfer := Transfer from: withdrawAccount to: depositAccount for: 50.	
 		
 	self assert: (depositAccount transactions includes: transfer depositLeg).
+	! !
+
+
+!TransferTest methodsFor: 'setUp/tearDown' stamp: 'DHS 6/2/2019 19:31:34'!
+setUp
+	withdrawAccount := ReceptiveAccount new.
+	depositAccount := ReceptiveAccount new.
+
 	! !
 
 
