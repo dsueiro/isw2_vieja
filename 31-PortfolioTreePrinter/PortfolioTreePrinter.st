@@ -751,6 +751,15 @@ reportForWithdraw: aWithdraw on: lines
 reportForWithdrawForTransfer: aWithdrawForTransfer on: lines
 	self subclassResponsibility ! !
 
+!AccountReport methodsFor: 'visitor' stamp: 'DHS 6/3/2019 01:44:22'!
+visitTransaction
+	| reportedValues |
+	reportedValues := OrderedCollection new.
+
+	account transactions do: [
+			:transaction | transaction acceptReportVisitor: self on: reportedValues ].			
+	^ reportedValues.! !
+
 
 !AccountReport methodsFor: 'initialization' stamp: 'DHS 6/3/2019 01:33:11'!
 initializeFor: anAccount 
@@ -760,15 +769,6 @@ initializeFor: anAccount
 !AccountReport methodsFor: 'reporting' stamp: 'DHS 6/3/2019 01:10:04'!
 show
 	self subclassResponsibility ! !
-
-!AccountReport methodsFor: 'reporting' stamp: 'DHS 6/3/2019 01:30:33'!
-visit
-	| reportedValues |
-	reportedValues := OrderedCollection new.
-
-	account transactions do: [
-			:transaction | transaction acceptReportVisitor: self on: reportedValues ].			
-	^ reportedValues.! !
 
 
 !classDefinition: #AccountSummary category: #PortfolioTreePrinter!
@@ -799,10 +799,10 @@ reportForWithdrawForTransfer: aWithdrawForTransfer on: lines
 ! !
 
 
-!AccountSummary methodsFor: 'reporting' stamp: 'DHS 6/3/2019 01:34:34'!
+!AccountSummary methodsFor: 'reporting' stamp: 'DHS 6/3/2019 01:44:22'!
 show
 	| lines |
-	lines := self visit.
+	lines := self visitTransaction.
 
 	lines add: 'Balance = ', account balance asString .
 	^ lines.! !
@@ -848,10 +848,10 @@ reportForWithdrawForTransfer: aWithdrawForTransfer on: values
 ! !
 
 
-!TransferNet methodsFor: 'reporting' stamp: 'DHS 6/3/2019 01:31:29'!
+!TransferNet methodsFor: 'reporting' stamp: 'DHS 6/3/2019 01:44:22'!
 show
 	| values |
-	values := self visit.
+	values := self visitTransaction.
 
 	^ values sum.! !
 
