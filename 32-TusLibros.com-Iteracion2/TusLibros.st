@@ -91,17 +91,27 @@ test08CartRemembersTheNumberOfAddedItems
 	cart add: 2 of: self itemSellByTheStore.
 	self assert: (cart occurrencesOf: self itemSellByTheStore) = 2! !
 
+!CartTest methodsFor: 'tests' stamp: 'DHS 6/10/2019 18:42:25'!
+test09CartCanCalculateTotal
+
+	| cart |
+	
+	cart := self createCart.
+	
+	cart add: 2 of: self itemSellByTheStore.
+	self assert: cart total = 8! !
+
 
 !CartTest methodsFor: 'support' stamp: 'DHS 6/10/2019 17:57:32'!
 createCart
 	
 	^Cart acceptingItemsOf: self defaultPriceList! !
 
-!CartTest methodsFor: 'support' stamp: 'DHS 6/10/2019 17:59:13'!
+!CartTest methodsFor: 'support' stamp: 'DHS 6/10/2019 18:27:57'!
 defaultPriceList
 	| dictionary |
 	dictionary := Dictionary new.
-	dictionary add: self itemSellByTheStore -> 1. 
+	dictionary add: self itemSellByTheStore -> 2. 
 	^dictionary
 ! !
 
@@ -128,6 +138,16 @@ createCart
 	
 	^Cart acceptingItemsOf: self defaultPriceList! !
 
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/10/2019 18:22:37'!
+createCashier
+	| card cashier cart |
+	card := Creditcard number: '1234123412431234' of: 'Juan Perez' expiringOn: (GregorianMonthOfYear year: 2099  monthNumber: 1). 
+	
+	cart := self createCart.
+	cashier := Cashier for: cart  withCard: card on: (FixedGregorianDate fromDate: (Date newDay: 12 month: #July year: 2019)).
+
+	^cashier! !
+
 !CashierTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/10/2019 17:53:52'!
 defaultCatalog
 	
@@ -146,10 +166,10 @@ itemSellByTheStore
 	
 	^ 'validBook'! !
 
-!CashierTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/10/2019 17:47:00'!
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/10/2019 18:49:58'!
 test01
 	| card cashier cart |
-	card := Creditcard number: '1234123412431234' of: 'Juan Perez' expiringOn: (GregorianMonthOfYear year: 2019  monthNumber: 1). 
+	card := Creditcard number: '1234123412431234' of: 'Juan Perez' expiringOn: (GregorianMonthOfYear yearNumber: 2019 monthNumber:  1). 
 	
 	cart := nil.
 	self 
@@ -159,6 +179,14 @@ test01
 			self assert: anError messageText = Cashier expiredCardError.
 			self assert: cashier isNil.
 		].
+! !
+
+!CashierTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/10/2019 18:23:54'!
+test02
+	| cashier |
+	cashier := self createCashier.
+	
+	
 ! !
 
 
@@ -196,7 +224,7 @@ test02
 
 !classDefinition: #Cart category: #TusLibros!
 Object subclass: #Cart
-	instanceVariableNames: 'catalog items'
+	instanceVariableNames: 'items priceList'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
@@ -212,10 +240,10 @@ invalidQuantityErrorMessage
 	^'Invalid number of items'! !
 
 
-!Cart methodsFor: 'assertions' stamp: 'DHS 6/10/2019 17:58:20'!
+!Cart methodsFor: 'assertions' stamp: 'DHS 6/10/2019 18:38:21'!
 assertIsValidItem: anItem
 
-	(catalog includesKey: anItem) ifFalse: [ self error: self invalidItemErrorMessage ]! !
+	(priceList includesKey: anItem) ifFalse: [ self error: self invalidItemErrorMessage ]! !
 
 !Cart methodsFor: 'assertions' stamp: 'HernanWilkinson 6/17/2013 17:51'!
 assertIsValidQuantity: aQuantity
@@ -223,10 +251,10 @@ assertIsValidQuantity: aQuantity
 	aQuantity strictlyPositive ifFalse: [ self error: self invalidQuantityErrorMessage ]! !
 
 
-!Cart methodsFor: 'initialization' stamp: 'HernanWilkinson 6/17/2013 17:48'!
+!Cart methodsFor: 'initialization' stamp: 'DHS 6/10/2019 18:38:21'!
 initializeAcceptingItemsOf: aCatalog
 
-	catalog := aCatalog.
+	priceList := aCatalog.
 	items := OrderedCollection new.! !
 
 
@@ -234,6 +262,10 @@ initializeAcceptingItemsOf: aCatalog
 occurrencesOf: anItem
 
 	^items occurrencesOf: anItem  ! !
+
+!Cart methodsFor: 'queries' stamp: 'DHS 6/10/2019 18:41:03'!
+total
+	 ^items inject: 0 into: [:total :book | total + ((priceList at: book) * (self occurrencesOf: book))].! !
 
 
 !Cart methodsFor: 'testing' stamp: 'DHS 6/10/2019 18:01:23'!
@@ -259,6 +291,7 @@ add: aQuantity of: anItem
 	self assertIsValidItem: anItem.
 
 	1 to: aQuantity do: [ :aNumber | items add: anItem ]! !
+
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -295,9 +328,9 @@ Cashier class
 expiredCardError
 	^'Cannot start a checkout with an expired card'! !
 
-!Cashier class methodsFor: 'as yet unclassified' stamp: 'DHS 6/10/2019 17:49:09'!
+!Cashier class methodsFor: 'as yet unclassified' stamp: 'DHS 6/10/2019 18:45:06'!
 for: aCart withCard: aCreditcard on: aDate 
-	[aCreditcard isExpiredOn: aDate] ifTrue: [ ^self error: self expiredCardError  ].
+	(aCreditcard isExpiredOn: aDate) ifTrue: [ ^self error: self expiredCardError  ].
 	^self new initializeFor: aCart withCard: aCreditcard on: aDate! !
 
 
