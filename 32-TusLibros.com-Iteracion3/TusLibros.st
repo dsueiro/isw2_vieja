@@ -1,18 +1,18 @@
 !classDefinition: #ApiTest category: #TusLibros!
 TestCase subclass: #ApiTest
-	instanceVariableNames: 'testObjectsFactory factory catalog'
+	instanceVariableNames: 'catalog testObjectsFactory'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:27:10'!
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:39:12'!
 setUp
-	factory := StoreTestObjectsFactory new.
-	catalog := factory  defaultCatalog .
+	testObjectsFactory := StoreTestObjectsFactory new.
+	catalog := testObjectsFactory  defaultCatalog .
 ! !
 
-!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:28:10'!
-test01
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:45:44'!
+test01CannotCreateCartWithInvalidCredentials
 	| api validator |
 	validator := UserValidator with: [false].
 	
@@ -28,8 +28,8 @@ test01
 	
 	! !
 
-!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:28:24'!
-test02
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:46:15'!
+test02CannotListUnknownCart
 	| api validator |
 	validator := UserValidator with: [false].
 	
@@ -45,8 +45,8 @@ test02
 	
 	! !
 
-!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:28:39'!
-test03
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:46:58'!
+test03NewCartIsEmpty
 	| api validator cartId |
 	validator := UserValidator with: [true].
 	
@@ -54,12 +54,12 @@ test03
 	
 	cartId := api createCartFor: 1 password: 'x'.
 	
-	(api listCart: cartId) isEmpty.
+	self assert: (api listCart: cartId) isEmpty.
 	
 	! !
 
-!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:30:51'!
-test04
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:47:19'!
+test04CartRemembersAddedItems
 	| api validator cartId isbn cartContent|
 	validator := UserValidator with: [true].
 	
@@ -67,11 +67,40 @@ test04
 	
 	cartId := api createCartFor: 1 password: 'x'.
 	
-	isbn := factory  itemSellByTheStore.
+	isbn := testObjectsFactory  itemSellByTheStore.
 	api addToCart: cartId quantity: 2 of: isbn.
 	cartContent := api listCart: cartId. 
 	
 	self assert: (cartContent occurrencesOf: isbn) equals: 2.  
+	! !
+
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:48:00'!
+test05NotPurchasesAreListedBeforeCheckouts
+	| api validator |
+	validator := UserValidator with: [true].
+	
+	api := Api with: validator andCatalog: catalog.
+	
+	self assert: (api listPurchases) isEmpty.
+	
+	! !
+
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:48:18'!
+test06CannotCheckoutAnUnknownCart
+	| api validator |
+	validator := UserValidator with: [true].
+	
+	api := Api with: validator andCatalog: catalog.
+	
+	self 
+		should: [ api checkOutCart: 1 charging: testObjectsFactory notExpiredCreditCard through: self. ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Api cartDoesNotExistError.
+			self assert: (api listPurchases) isEmpty.
+		 ].
+
+	
 	! !
 
 
@@ -351,6 +380,10 @@ addToCart: aCartId quantity: aQuantity of: anItem
 	cart := self getCart: aCartId.
 	cart add: aQuantity of: anItem! !
 
+!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:44:30'!
+checkOutCart: aCartId charging: aCreditCard through: aMerchantProcessor
+	self getCart: aCartId.! !
+
 !Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 06:33:47'!
 createCart
 	| cart newId |
@@ -379,6 +412,10 @@ createCartFor: userId password: aPassword
 !Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:02:51'!
 generateId
 	^ lastId := lastId+1! !
+
+!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:34:45'!
+listPurchases
+	^ #()! !
 
 !Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 05:51:51'!
 withId: aSmallInteger password: aString 
