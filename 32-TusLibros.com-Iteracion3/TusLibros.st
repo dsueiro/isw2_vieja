@@ -1,16 +1,22 @@
 !classDefinition: #ApiTest category: #TusLibros!
 TestCase subclass: #ApiTest
-	instanceVariableNames: 'testObjectsFactory'
+	instanceVariableNames: 'testObjectsFactory factory catalog'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 06:03:31'!
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:27:10'!
+setUp
+	factory := StoreTestObjectsFactory new.
+	catalog := factory  defaultCatalog .
+! !
+
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:28:10'!
 test01
 	| api validator |
-	validator := UserValidator with: [^ false].
+	validator := UserValidator with: [false].
 	
-	api := Api with: validator.
+	api := Api with: validator andCatalog: catalog.
 	
 	self 
 		should: [ api createCartFor: 1 password: 'x' ]
@@ -22,12 +28,12 @@ test01
 	
 	! !
 
-!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 06:02:41'!
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:28:24'!
 test02
 	| api validator |
-	validator := UserValidator with: [^ false].
+	validator := UserValidator with: [false].
 	
-	api := Api with: validator.
+	api := Api with: validator andCatalog: catalog.
 	
 	self 
 		should: [ api listCart: 1 ]
@@ -37,6 +43,35 @@ test02
 			 ].
 	
 	
+	! !
+
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:28:39'!
+test03
+	| api validator cartId |
+	validator := UserValidator with: [true].
+	
+	api := Api with: validator andCatalog: catalog.
+	
+	cartId := api createCartFor: 1 password: 'x'.
+	
+	(api listCart: cartId) isEmpty.
+	
+	! !
+
+!ApiTest methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:30:51'!
+test04
+	| api validator cartId isbn cartContent|
+	validator := UserValidator with: [true].
+	
+	api := Api with: validator andCatalog: catalog.
+	
+	cartId := api createCartFor: 1 password: 'x'.
+	
+	isbn := factory  itemSellByTheStore.
+	api addToCart: cartId quantity: 2 of: isbn.
+	cartContent := api listCart: cartId. 
+	
+	self assert: (cartContent occurrencesOf: isbn) equals: 2.  
 	! !
 
 
@@ -290,32 +325,80 @@ debit: anAmount from: aCreditCard
 
 !classDefinition: #Api category: #TusLibros!
 Object subclass: #Api
-	instanceVariableNames: 'userValidator'
+	instanceVariableNames: 'userValidator catalog carts lastId'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
+
+!Api methodsFor: 'initialization' stamp: 'DHS 6/24/2019 09:05:03'!
+initialize
+	lastId := 0.
+	carts := Dictionary new.! !
 
 !Api methodsFor: 'initialization' stamp: 'DHS 6/24/2019 05:45:50'!
 initializeWith: aUserValidator 
 	userValidator := aUserValidator.! !
 
+!Api methodsFor: 'initialization' stamp: 'DHS 6/24/2019 09:26:14'!
+initializeWith: anUserValidator andCatalog: aCatalog 
+	userValidator := anUserValidator.
+	catalog := aCatalog.! !
 
-!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 05:51:04'!
+
+!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:15:23'!
+addToCart: aCartId quantity: aQuantity of: anItem
+	| cart |
+	cart := self getCart: aCartId.
+	cart add: aQuantity of: anItem! !
+
+!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 06:33:47'!
 createCart
-	self! !
+	| cart newId |
+	cart := Cart acceptingItemsOf: catalog.
+	
+	newId := self generateId.
+	carts at: newId put: cart.
+	
+	^newId! !
 
-!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 06:03:31'!
-createCartFor: userId password: aPassword 
-	^self error: self class invalidUserOrPasswordError .! !
+!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 06:39:04'!
+createCartFor: userId password: aPassword
+	| cart newId |
+
+	(userValidator validate: userId withPassword: aPassword) ifFalse: [
+		^self error: self class invalidUserOrPasswordError .
+	].
+
+	cart := Cart acceptingItemsOf: catalog.
+	
+	newId := self generateId.
+	carts at: newId put: cart.
+	
+	^newId! !
+
+!Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:02:51'!
+generateId
+	^ lastId := lastId+1! !
 
 !Api methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 05:51:51'!
 withId: aSmallInteger password: aString 
 	self shouldBeImplemented.! !
 
 
-!Api methodsFor: 'accessing' stamp: 'DHS 6/24/2019 06:02:41'!
+!Api methodsFor: 'accessing' stamp: 'DHS 6/24/2019 09:13:07'!
+getCart: aCartId
+	^ carts at: aCartId ifAbsent:  [
+		self error: self class cartDoesNotExistError.
+	].
+
+! !
+
+!Api methodsFor: 'accessing' stamp: 'DHS 6/24/2019 09:13:33'!
 listCart: aCartId 
-	self error: self class cartDoesNotExistError.! !
+	| cart |
+	cart := self getCart: aCartId.
+
+	^ cart elements ! !
 
 !Api methodsFor: 'accessing' stamp: 'DHS 6/24/2019 05:58:12'!
 listCarts
@@ -327,10 +410,6 @@ listCarts
 Api class
 	instanceVariableNames: ''!
 
-!Api class methodsFor: 'instance creation' stamp: 'DHS 6/24/2019 05:47:53'!
-with: aUserValidator
-	^self new initializeWith: aUserValidator! !
-
 
 !Api class methodsFor: 'error handling' stamp: 'DHS 6/24/2019 06:02:41'!
 cartDoesNotExistError
@@ -339,6 +418,11 @@ cartDoesNotExistError
 !Api class methodsFor: 'error handling' stamp: 'DHS 6/24/2019 06:03:31'!
 invalidUserOrPasswordError
 	^ 'Invalid User or Password'! !
+
+
+!Api class methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 09:22:41'!
+with: aUserValidator andCatalog: aCatalog 
+	^self new initializeWith: aUserValidator andCatalog: aCatalog! !
 
 
 !classDefinition: #Cart category: #TusLibros!
@@ -376,6 +460,11 @@ initializeAcceptingItemsOf: aCatalog
 	catalog := aCatalog.
 	items := OrderedCollection new.! !
 
+
+!Cart methodsFor: 'queries' stamp: 'DHS 6/24/2019 09:08:21'!
+elements
+
+	^items! !
 
 !Cart methodsFor: 'queries' stamp: 'HernanWilkinson 6/17/2013 17:45'!
 occurrencesOf: anItem
@@ -638,17 +727,26 @@ today
 
 !classDefinition: #UserValidator category: #TusLibros!
 Object subclass: #UserValidator
-	instanceVariableNames: ''
+	instanceVariableNames: 'expectedResponseProcessor'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
+
+!UserValidator methodsFor: 'initialization' stamp: 'DHS 6/24/2019 06:12:07'!
+initializeWith: aResponseProcessor 
+	expectedResponseProcessor := aResponseProcessor.! !
+
+
+!UserValidator methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 06:12:50'!
+validate: userId withPassword: aPassword 
+	^ expectedResponseProcessor value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'UserValidator class' category: #TusLibros!
 UserValidator class
-	instanceVariableNames: 'expectedResponseProcessor'!
+	instanceVariableNames: ''!
 
-!UserValidator class methodsFor: 'as yet unclassified' stamp: 'DHS 6/24/2019 05:43:55'!
+!UserValidator class methodsFor: 'instance creation' stamp: 'DHS 6/24/2019 06:10:22'!
 with: aResponseProcessor
-	expectedResponseProcessor := aResponseProcessor.! !
+	^ self new initializeWith: aResponseProcessor.! !
